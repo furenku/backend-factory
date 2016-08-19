@@ -3,6 +3,7 @@
 /*
 Plugin Name: Backend Factory for Wordpress
 Author: kernspaltung!
+Description: Backend Configuration tool for Developers
 */
 
 global $cpts;
