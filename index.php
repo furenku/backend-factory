@@ -16,7 +16,7 @@ class BackendFactory {
       $this->cpts = array();
    }
 
-   function addCPT( $cpt = NULL ) {
+   function add_cpt( $cpt = NULL ) {
       if( $cpt ) {
          array_push( $this -> cpts, $cpt );
       }
@@ -92,7 +92,7 @@ function backend_factory_init() {
    include_once 'tests/cpts.php';
 
    foreach( $cpts as $cpt ) {
-      $backendFactory -> addCPT( $cpt );
+      $backendFactory -> add_cpt( $cpt );
    }
 
    $backendFactory -> register_cpts();

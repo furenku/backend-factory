@@ -9,14 +9,15 @@
 + Custom Post Type Relationships
 
 ```
-// CPT registration
+// Custom Post Type registration:
+
 $cpt = array(
    'post_type' => 'thing',
    'singular' => "Thing",
    'plural' => "Things"
 );
 
-$backendFactory -> addCPT( $cpt );
+$backendFactory -> add_cpt( $cpt );
 
 $backendFactory -> register_cpts();
 ```
