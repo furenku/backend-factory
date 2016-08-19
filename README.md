@@ -11,10 +11,9 @@
 ```
 // CPT registration
 $cpt = array(
-   'post_type' => 'test_item_' . $i,
-   'hierarchical' => 'true',
-   'singular' => "Test Element " . $i,
-   'plural' => "Test Elements " . $i
+   'post_type' => 'thing',
+   'singular' => "Thing",
+   'plural' => "Things"
 );
 
 $backendFactory -> addCPT( $cpt );
