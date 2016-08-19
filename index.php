@@ -2,7 +2,7 @@
 
 /*
 Plugin Name: Backend Factory for Wordpress
-Author: furenku
+Author: kernspaltung!
 */
 
 global $cpts;
