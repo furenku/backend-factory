@@ -1,5 +1,4 @@
 <?php
-
 /*
 Plugin Name: Backend Factory for Wordpress
 Author: kernspaltung!
@@ -8,6 +7,10 @@ Description: Backend Configuration tool for Developers
 
 global $cpts;
 
+include 'metaboxes/metabox_markup_function.php';
+include 'metaboxes/dynamic_metaboxes.php';
+include 'metaboxes/dynamic_metaboxes_save.php';
+
 class BackendFactory {
 
    var $cpts;
@@ -15,6 +18,9 @@ class BackendFactory {
    function init() {
       $this->cpts = array();
    }
+
+
+   // CPTs (Custom Post Types):
 
    function add_cpt( $cpt = NULL ) {
       if( $cpt ) {
