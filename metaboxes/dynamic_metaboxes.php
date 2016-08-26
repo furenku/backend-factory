@@ -50,7 +50,7 @@ $metaboxes = array(
 
             'field_type'            => 'related_post',
             'repeatable'            => true,
-            'related_post_types'    => array('banda'),
+            'related_post_types'    => array('persona'),
 
             'field_label'           => 'Miembros de la Banda',
             'description'           => '

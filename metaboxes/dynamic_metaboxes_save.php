@@ -30,7 +30,7 @@ function save_dynamic_metaboxes($post_id, $post, $update)
 
             $field_value = $_POST[ $field['field_name'] ];
 
-            
+
             if( $field['field_type'] == "datebooking" ) {
 
                $dates = array();
@@ -114,4 +114,4 @@ function save_dynamic_metaboxes($post_id, $post, $update)
 
 }
 
-add_action("save_post", "save_dynamic_metaboxes", 10, 3);
+add_action("save_post", "save_dynamic_metaboxes" );
