@@ -30,28 +30,35 @@ function save_dynamic_metaboxes($post_id, $post, $update)
 
             $field_value = $_POST[ $field['field_name'] ];
 
-
+            
             if( $field['field_type'] == "datebooking" ) {
 
-               $fechas = array();
+               $dates = array();
 
-               if(isset($_POST[ 'taller-fecha_inicio'])) {
-                  $fechas[ 'taller-fecha_inicio' ] = $_POST[ 'taller-fecha_inicio'];
+               if(isset($_POST[ 'start_date'])) {
+                  $dates[ 'start_date' ] = $_POST[ 'start_date'];
                }
-               if(isset($_POST[ 'taller-fecha_final'])) {
-                  $fechas[ 'taller-fecha_final' ] = $_POST[ 'taller-fecha_final'];
+
+               if(isset($_POST[ 'end_date'])) {
+                  $dates[ 'end_date' ] = $_POST[ 'end_date'];
                }
-               if(isset($_POST[ 'taller-horarios'])) {
-                  $fechas[ 'taller-horarios' ] = $_POST[ 'taller-horarios'];
+
+               if(isset($_POST[ 'schedule'])) {
+                  $dates[ 'schedule' ] = $_POST[ 'schedule'];
                }
-               if(isset($_POST[ 'taller-lugar'])) {
-                  $fechas[ 'taller-lugar' ] = $_POST[ 'taller-lugar'];
+
+               if(isset($_POST[ 'place'])) {
+                  $dates[ 'place' ] = $_POST[ 'place'];
+               }
+
+               if(isset($_POST[ 'start_date'])) {
+                  $dates[ 'start_date' ] = $_POST[ 'start_date'];
                }
 
                update_post_meta(
                   $post_id,
-                  'fechas',
-                  $fechas
+                  'dates',
+                  $dates
                );
 
             }

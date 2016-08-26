@@ -7,9 +7,7 @@ Description: Backend Configuration tool for Developers
 
 global $cpts;
 
-include 'metaboxes/metabox_markup_function.php';
 include 'metaboxes/dynamic_metaboxes.php';
-include 'metaboxes/dynamic_metaboxes_save.php';
 
 class BackendFactory {
 
@@ -95,7 +93,7 @@ function backend_factory_init() {
 
    $backendFactory->init();
 
-   include_once 'tests/cpts.php';
+   include_once 'tests/bandas-personas.php';
 
    foreach( $cpts as $cpt ) {
       $backendFactory -> add_cpt( $cpt );

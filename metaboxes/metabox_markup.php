@@ -6,7 +6,7 @@ function standard_metabox_markup( $post,  $callback_args ) {
    $metabox = $args['metabox'];
 
    wp_nonce_field(basename(__FILE__), $metabox['name']."-metabox-nonce");
-
+   var_dump( get_post_meta($post->ID) );
    ?>
 
    <p>
@@ -63,7 +63,7 @@ function standard_metabox_markup( $post,  $callback_args ) {
             ?>
             <div class="columns">
                <?php
-               $fechas = get_post_meta( $post_id, 'fechas', true );
+               $fechas = get_post_meta( $post_id, 'dates', true );
                var_dump( $fechas );
 
                ?>
@@ -71,26 +71,26 @@ function standard_metabox_markup( $post,  $callback_args ) {
             <div class="repeatable columns">
 
                <div>
-                  <label for="taller-fecha_inicio">
+                  <label for="start_date">
                      Fecha de Inicio
                   </label>
-                  <input type="text" name="taller-fecha_inicio" class="taller-fecha_inicio columns date start" />
+                  <input type="text" name="start_date" class="start_date columns date start" />
                </div>
 
 
                <div>
-                  <label for="taller-fecha_final">
+                  <label for="end_date">
                      Fecha de Final
                   </label>
-                  <input type="text" name="taller-fecha_final" class="taller-fecha_final columns date end" />
+                  <input type="text" name="end_date" class="end_date columns date end" />
                </div>
 
 
                <div>
-                  <label for="taller-horarios">
+                  <label for="schedule">
                      Horarios
                   </label>
-                  <input type="text" name="taller-horarios" class="taller-horarios columns" value="">
+                  <input type="text" name="schedule" class="schedule columns" value="">
                </div>
             </div>
             <?php
@@ -112,6 +112,22 @@ function standard_metabox_markup( $post,  $callback_args ) {
    endforeach; ?>
 
 </div>
+
+<script>
+jQuery(document).ready(function($){
+
+   $('.add_repeatable').click(function(){
+      $(this).parent().find('.repeatable.hidden').clone().detach().removeClass('hidden').appendTo( '.repeatables' );
+      $(this).parent().find('.delete_this.hidden').clone().detach().removeClass('hidden').appendTo( '.repeatables' );
+   })
+
+   $('.delete_this').click(function(){
+      $(this).parent().remove();
+   })
+
+})
+</script>
+
 <?php
 }
 
@@ -134,24 +150,6 @@ function add_dynamic_metaboxes()
    );
 endforeach;
 
-?>
-
-<script>
-jQuery(document).ready(function($){
-
-   $('.add_repeatable').click(function(){
-      $(this).parent().find('.repeatable.hidden').clone().detach().removeClass('hidden').appendTo( '.repeatables' );
-      $(this).parent().find('.delete_this.hidden').clone().detach().removeClass('hidden').appendTo( '.repeatables' );
-   })
-
-   $('.delete_this').click(function(){
-      $(this).parent().remove();
-   })
-
-})
-</script>
-
-<?php
 
 }
 
