@@ -9,24 +9,17 @@ global $cpts;
    $cpts = array(
 
       array(
-         'post_type' => 'persona',
+         'post_type' => 'evento',
          'hierarchical' => 'false',
-         'singular' => "Persona",
-         'plural' => "Personas"
+         'singular' => "Evento",
+         'plural' => "Eventos"
       )
       ,
       array(
-         'post_type' => 'banda',
+         'post_type' => 'lugar',
          'hierarchical' => 'false',
-         'singular' => "Banda",
-         'plural' => "Bandas",
-      )
-      ,
-      array(
-         'post_type' => 'concierto',
-         'hierarchical' => 'false',
-         'singular' => "Concierto",
-         'plural' => "Conciertos",
+         'singular' => "Lugar",
+         'plural' => "Lugares",
       )
 
    );

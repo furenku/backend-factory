@@ -7,6 +7,8 @@ function standard_metabox_markup( $post,  $callback_args ) {
 
    wp_nonce_field(basename(__FILE__), $metabox['name']."-metabox-nonce");
 
+   var_dump( get_post_meta($post->ID) );
+
    ?>
 
    <p>

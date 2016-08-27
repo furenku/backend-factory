@@ -132,8 +132,8 @@ function backend_factory_init() {
       $dynamic_metaboxes -> init();
 
 
-   include_once 'tests/bandas-personas.php';
-   include_once 'tests/metaboxes.php';
+   include_once 'tests/cpt-eventos-lugares.php';
+   include_once 'tests/metaboxes-evento.php';
 
    foreach( $cpts as $cpt ) {
       $backendFactory -> add_cpt( $cpt );
