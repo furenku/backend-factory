@@ -7,7 +7,7 @@ function standard_metabox_markup( $post,  $callback_args ) {
 
    wp_nonce_field(basename(__FILE__), $metabox['name']."-metabox-nonce");
 
-   var_dump( get_post_meta($post->ID) );
+   var_dump( get_post_meta( $post -> ID ) );
 
    ?>
 
@@ -51,107 +51,120 @@ function standard_metabox_markup( $post,  $callback_args ) {
                $related_posts = get_post_meta(
                $post->ID,
                $related_post_type_field_name,
-               true
-            );
+               true );
 
-            if(is_array($related_posts)) {
-               foreach( $related_posts as $related_post ) {
-                  if( $related_post != "0" )
-                  related_post_selector( $related_post_type_field_name, $posts, $related_post );
+               if(is_array($related_posts)) {
+                  foreach( $related_posts as $related_post ) {
+                     if( $related_post != "0" )
+                     related_post_selector( $related_post_type_field_name, $posts, $related_post );
+                  }
                }
-            }
 
-            related_post_selector( $related_post_type_field_name, $posts );
+               related_post_selector( $related_post_type_field_name, $posts );
+
+            }
 
          }
 
-      }
 
+         if( $field['field_type'] == "date" ) {
 
-      if( $field['field_type'] == "datebooking" ) {
+            $date = get_post_meta( $post->ID, $field['field_name'], true);
+            ?>
 
-         ?>
+            <div class="columns">
+               <h4>Fecha</h4>
+               <div class="columns p4"><input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $date; ?>"></div>
+            </div>
 
-         <div class="columns">
             <?php
 
-            $fechas = get_post_meta( $post_id, 'dates', true );
-            var_dump( $fechas );
+         }
+
+
+         if( $field['field_type'] == "datebooking" ) {
 
             ?>
-         </div>
-         <div class="repeatable columns">
 
-            <div>
-               <label for="start_date">
-                  Fecha de Inicio
-               </label>
-               <input type="text" name="start_date" class="start_date columns date start" />
+            <div class="columns">
+               <?php
+
+               $fechas = get_post_meta( $post_id, 'date-booking?', true );
+
+               ?>
             </div>
+            <div class="repeatable columns">
+
+               <div>
+                  <label for="start_date">
+                     Fecha de Inicio
+                  </label>
+                  <input type="text" name="start_date" class="start_date columns date start" />
+               </div>
 
 
-            <div>
-               <label for="end_date">
-                  Fecha de Final
-               </label>
-               <input type="text" name="end_date" class="end_date columns date end" />
+               <div>
+                  <label for="end_date">
+                     Fecha de Final
+                  </label>
+                  <input type="text" name="end_date" class="end_date columns date end" />
+               </div>
+
+
+               <div>
+                  <label for="schedule">
+                     Horarios
+                  </label>
+                  <input type="text" name="schedule" class="schedule columns" value="">
+               </div>
             </div>
+            <?php
 
+         }
 
-            <div>
-               <label for="schedule">
-                  Horarios
-               </label>
-               <input type="text" name="schedule" class="schedule columns" value="">
-            </div>
-         </div>
-         <?php
+         if( $field['repeatable'] ) {
+            ?>
 
-      }
+            <div class="add_repeatable button">Añadir otro</div>
 
-      if( $field['repeatable'] ) {
-         ?>
+            <?php
+         }
 
-         <div class="add_repeatable button">Añadir otro</div>
+         echo '</div>';
 
-         <?php
-      }
+         echo '</div>';
 
-      echo '</div>';
+      endforeach; ?>
 
-      echo '</div>';
+   </div>
 
-   endforeach; ?>
+   <script>
+   jQuery(document).ready(function($){
 
-</div>
+      $('.add_repeatable').click(function(){
+         $(this).parent().find('.repeatable.hidden').clone().detach().removeClass('hidden').appendTo( '.repeatables' );
+         $(this).parent().find('.delete_this.hidden').clone().detach().removeClass('hidden').appendTo( '.repeatables' );
+      })
 
-<script>
-jQuery(document).ready(function($){
+      $('.delete_this').click(function(){
+         $(this).parent().remove();
+      })
 
-   $('.add_repeatable').click(function(){
-      $(this).parent().find('.repeatable.hidden').clone().detach().removeClass('hidden').appendTo( '.repeatables' );
-      $(this).parent().find('.delete_this.hidden').clone().detach().removeClass('hidden').appendTo( '.repeatables' );
    })
+   </script>
 
-   $('.delete_this').click(function(){
-      $(this).parent().remove();
-   })
-
-})
-</script>
-
-<?php
+   <?php
 }
 
 
 function related_post_selector( $name, $posts, $id=0, $hidden=false ) {
 
-   $name .= $name  . '[]';
+   $name .= '[]';
 
    ?>
    <div class="repeatable <?php echo $hidden ? 'hidden':''; ?>">
 
-      <select class="" name="<?php echo $name; ?>">
+      <select class="columns" name="<?php echo $name; ?>">
          <option value="0" <?php echo ! $id ? 'selected' : ''; ?>></option>
          <?php
          foreach( $posts as $post ) : ?>
