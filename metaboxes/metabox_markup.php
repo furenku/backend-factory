@@ -1,6 +1,6 @@
 <?php
 
-function standard_metabox_markup( $post,  $callback_args ) {
+function standard_metabox_html( $post,  $callback_args ) {
 
    $args = $callback_args['args'];
    $metabox = $args['metabox'];
@@ -90,6 +90,41 @@ function standard_metabox_markup( $post,  $callback_args ) {
             <div class="columns">
                <h4>Fecha</h4>
                <div class="columns p4"><input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $date; ?>"></div>
+            </div>
+
+            <?php
+
+         }
+
+         if( $field['field_type'] == "time" ) {
+
+            $date = get_post_meta( $post->ID, $field['field_name'], true);
+            ?>
+
+            <div class="columns">
+               <h4>Hora</h4>
+               <div class="columns p4"><input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $date; ?>"></div>
+            </div>
+
+            <?php
+
+         }
+         if( $field['field_type'] == "integer" ) {
+
+            $value = get_post_meta( $post->ID, $field['field_name'], true);
+            ?>
+
+            <div class="columns">
+               <h4><?php echo $field['field_label']; ?></h4>
+
+               <p>
+                  <?php echo $field['description']; ?>
+               </p>
+
+               <div class="columns p4">
+                  <input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>">
+               </div>
+
             </div>
 
             <?php

@@ -86,12 +86,13 @@ class BackendFactory {
 class DynamicMetaboxes {
 
    var $metaboxes;
+
    public function init() {
       $this->metaboxes = array();
       add_action("add_meta_boxes", array( $this, 'register_metaboxes' ) );
       // echo "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laborum praesentium odit sunt adipisci sequi, eaque tenetur quae libero!";
    }
-   function add_metabox( $metabox = NULL ) {
+   public function add_metabox( $metabox = NULL ) {
       if( $metabox ) {
           array_push( $this -> metaboxes, $metabox );
       }
@@ -103,7 +104,7 @@ class DynamicMetaboxes {
          add_meta_box(
             $metabox['post_type']."-meta-box",
             $metabox['title'],
-            "standard_metabox_markup",
+            "standard_metabox_html",
             $metabox['post_type'],
             "side",
             "default",

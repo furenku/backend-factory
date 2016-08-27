@@ -29,10 +29,10 @@ $metaboxes = array(
                   (Debe ser creado previamente)
                </p>
             ',
-            'markup_function'       => 'standard_metabox_markup'
+            'markup_function'       => 'standard_metabox_html'
          ),
          array(
-            'field_name'            => 'date' . '-' . '0',
+            'field_name'            => 'date',// . '-' . '0',
 
             'field_type'            => 'date',
             'repeatable'            => false,
@@ -40,10 +40,39 @@ $metaboxes = array(
             'field_label'           => 'Fecha del Evento',
             'description'           => '
             <p class="fontXXS" style="font-size:10px">
-               Escoge la fecha y hora del evento.
+               Escoge la fecha del evento.
             </p>
             ',
-            'markup_function'       => 'standard_metabox_markup'
+            'markup_function'       => 'standard_metabox_html'
+         ),
+         array(
+            'field_name'            => 'time',// . '-' . '0', . '-' . '0',
+
+            'field_type'            => 'time',
+            'repeatable'            => false,
+
+            'field_label'           => 'Hora del Evento',
+            'description'           => '
+            <p class="fontXXS" style="font-size:10px">
+               Escoge la hora del evento.
+            </p>
+            ',
+            'markup_function'       => 'standard_metabox_html'
+         ),
+
+         array(
+            'field_name'            => 'numero-asistentes',// . '-' . '0', . '-' . '0',
+
+            'field_type'            => 'integer',
+            'repeatable'            => false,
+
+            'field_label'           => 'Numero de asistentes',
+            'description'           => '
+            <p class="fontXXS" style="font-size:10px">
+               Cupo límite
+            </p>
+            ',
+            'markup_function'       => 'standard_metabox_html'
          ),
 
       )
