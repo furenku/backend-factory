@@ -7,8 +7,6 @@ function standard_metabox_markup( $post,  $callback_args ) {
 
    wp_nonce_field(basename(__FILE__), $metabox['name']."-metabox-nonce");
 
-   var_dump( get_post_meta( $post -> ID ) );
-
    ?>
 
    <p>
@@ -20,8 +18,7 @@ function standard_metabox_markup( $post,  $callback_args ) {
 
       foreach($metabox['fields'] as $field ) :
 
-         // $field_name = $field['field_type'] . '-' . $metabox['post_type'];
-         $field_name = $metabox['post_type'];
+         $field_name = $field['field_name'];
 
          echo '<div class="field">';
 
@@ -42,11 +39,17 @@ function standard_metabox_markup( $post,  $callback_args ) {
 
             foreach ($field['related_post_types'] as $related_post_type ) {
 
+               $field_name = $metabox['post_type'];
+
                $related_post_type_field_name =  $field_name . '-' . $related_post_type;
 
-               $posts = get_posts( array( 'post_type'=>$related_post_type ) );
+               $posts = get_posts( array( 'post_type' => $related_post_type ) );
 
-               related_post_selector( $related_post_type_field_name, $posts, 0, true );
+               if( $field['repeatable'] ) {
+
+                  related_post_selector( $related_post_type_field_name, $posts, 0, true, true );
+
+               }
 
                $related_posts = get_post_meta(
                $post->ID,
@@ -54,13 +57,25 @@ function standard_metabox_markup( $post,  $callback_args ) {
                true );
 
                if(is_array($related_posts)) {
-                  foreach( $related_posts as $related_post ) {
-                     if( $related_post != "0" )
-                     related_post_selector( $related_post_type_field_name, $posts, $related_post );
+                  // if(count($related_posts)>0) {
+                     foreach( $related_posts as $related_post ) {
+                        if( $related_post != "0" )
+                        related_post_selector( $related_post_type_field_name, $posts, $related_post, $field['repeatable'] );
+                     }
+                  // } else {
+                  //    if( ! $field['repeatable'] )
+                  //       related_post_selector( $related_post_type_field_name, $posts, 0, $field['repeatable'] );
+                  // }
+               } else {
+                  if( ! $field['repeatable'] ) {
+
+                     related_post_selector( $related_post_type_field_name, $posts, (int)$related_posts, $field['repeatable'] );
                   }
                }
 
-               related_post_selector( $related_post_type_field_name, $posts );
+               if( $field['repeatable'] ) {
+                  related_post_selector( $related_post_type_field_name, $posts, $field['repeatable']  );
+               }
 
             }
 
@@ -157,12 +172,13 @@ function standard_metabox_markup( $post,  $callback_args ) {
 }
 
 
-function related_post_selector( $name, $posts, $id=0, $hidden=false ) {
+function related_post_selector( $name, $posts, $id=0, $repeatable = false, $hidden=false ) {
 
-   $name .= '[]';
+
+   $name .= $repeatable ? '[]' : '';
 
    ?>
-   <div class="repeatable <?php echo $hidden ? 'hidden':''; ?>">
+   <div class="<?php echo $repeatable ? 'repeatable' : ''; echo " "; echo $hidden ? 'hidden':''; ?>">
 
       <select class="columns" name="<?php echo $name; ?>">
          <option value="0" <?php echo ! $id ? 'selected' : ''; ?>></option>

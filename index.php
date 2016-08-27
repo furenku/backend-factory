@@ -150,6 +150,10 @@ function backend_factory_init() {
    add_action("add_metaboxes", array( $backendFactory, 'testfunc' ) );
 
 
+   if ( !session_id() ) {
+      session_start();
+   }
+
    // $backendFactory -> register_metaboxes();
    // $backendFactory -> init_metaboxes();
 

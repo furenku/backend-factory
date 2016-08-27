@@ -30,6 +30,7 @@ function save_dynamic_metaboxes($post_id, $post, $update)
 
             $field_value = $_POST[ $field['field_name'] ];
 
+            $field_name = $field['field_name'];
 
             if( $field['field_type'] == "datebooking" ) {
 
@@ -66,6 +67,7 @@ function save_dynamic_metaboxes($post_id, $post, $update)
 
             if( $field['field_type'] == "related_post" ) {
 
+
                $related_post_ids = $field_value;
 
                foreach( $related_post_ids as $related_post_id ) {
@@ -73,10 +75,13 @@ function save_dynamic_metaboxes($post_id, $post, $update)
                   $related_post_type = $field['related_post_types'];
                   $related_post_type = $related_post_type[0];
 
+                  $field_name = $metabox['post_type'] . '-' .  $related_post_type;
+                  $field_value = $_POST[ '$field_name' ];
+
                   // checar si hay arreglo de referencias a posts 1 en post 2 recien asignado
                   $posts = get_post_meta(
                      $related_post_id,
-                     $related_post_type.'-'.$metabox['post-type'],
+                     $field_name,
                      true
                   );
 
@@ -91,7 +96,7 @@ function save_dynamic_metaboxes($post_id, $post, $update)
 
                   update_post_meta(
                      $related_post_id,
-                     $related_post_type.'-'.$metabox['post_type'],
+                     $field_name,
                      array_unique($posts)
                   );
 
@@ -99,9 +104,22 @@ function save_dynamic_metaboxes($post_id, $post, $update)
 
             }
 
+            $error = false;
+
+             // Do stuff.
+            $woops=false;
+             if ($woops) {
+                 $error = new WP_Error($code, $msg);
+             }
+
+             if ($error) {
+               $_SESSION['backend-factory-errors'] = $error->get_error_message();
+             }
+
+
             update_post_meta(
                $post_id,
-               $field['field_name'],
+               $field_name,
                $field_value
 
             );
@@ -115,3 +133,17 @@ function save_dynamic_metaboxes($post_id, $post, $update)
 }
 
 add_action("save_post", "save_dynamic_metaboxes" );
+
+
+
+add_action("admin_notices","wp_errors");
+
+function wp_errors() {
+   if ( array_key_exists( 'backend-factory-errors', $_SESSION ) ) {?>
+       <div class="error">
+           <p><?php echo $_SESSION['backend-factory-errors']; ?></p>
+       </div><?php
+
+       unset( $_SESSION['backend-factory-errors'] );
+   }
+}
