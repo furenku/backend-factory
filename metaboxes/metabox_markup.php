@@ -82,6 +82,22 @@ function standard_metabox_html( $post,  $callback_args ) {
          }
 
 
+         if( $field['field_type'] == "text" ) {
+
+            $date = get_post_meta( $post->ID, $field['field_name'], true);
+            ?>
+
+            <div class="columns">
+               <h4>
+                  <?php echo $field['field_label']; ?>
+               </h4>
+               <div class="columns p4"><input type="text" name="<?php echo $field['field_name']; ?>" value="<?php echo $date; ?>"></div>
+            </div>
+
+            <?php
+
+         }
+
          if( $field['field_type'] == "date" ) {
 
             $date = get_post_meta( $post->ID, $field['field_name'], true);
