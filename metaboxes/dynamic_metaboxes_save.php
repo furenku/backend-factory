@@ -1,12 +1,14 @@
 <?php
 
-function save_dynamic_metaboxes($post_id, $post, $update)
+function save_dynamic_metaboxes($post_id=0, $post=0, $update=0)
 {
    //
    //  $slug = "editorial";
    //  if($slug != $post->post_type)
    //      return $post_id;
 
+   if( !    $post )
+      return $post_id;
 
    global $metaboxes;
 
@@ -15,10 +17,9 @@ function save_dynamic_metaboxes($post_id, $post, $update)
 
    if(defined("DOING_AUTOSAVE") && DOING_AUTOSAVE)
    return $post_id;
-
+   if( is_array( $metaboxes ) );
    foreach( $metaboxes as $metabox ) {
-      if( $metabox['post_type'] == $post->post_type )
-      if (!isset($_POST[ $metabox['name']."-metabox-nonce" ]) || !wp_verify_nonce($_POST[ $metabox['name']."-metabox-nonce" ], basename(__FILE__)))
+      if( $metabox['post_type'] == $post->post_type || !isset($_POST[ $metabox['name']."-metabox-nonce" ]) || !wp_verify_nonce($_POST[ $metabox['name']."-metabox-nonce" ], basename(__FILE__)))
       return $post_id;
 
 

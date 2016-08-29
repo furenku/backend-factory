@@ -147,6 +147,9 @@ function backend_factory_init() {
 
    $backendFactory -> register_cpts();
 
+
+   include_once 'tests/content-woocommerce-automatic-product.php';
+
    // add_action("add_metaboxes", array( $backendFactory, 'register_metaboxes' ), 1 );
    add_action("add_metaboxes", array( $backendFactory, 'testfunc' ) );
 
@@ -160,6 +163,7 @@ function backend_factory_init() {
 
    // add_action( 'admin_init', array( $backendFactory, 'init_metaboxes' ) );
 }
+
 
 
 ?>
