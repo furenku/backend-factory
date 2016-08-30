@@ -114,10 +114,9 @@ class DynamicMetaboxes {
    }
 
 
-   public function testfunc() {
-echo '<h1>Init metaboxes</h1>';
-      var_dump("Lorem ipsum dolor sit amet, consectetur adipisicing elit. Suscipit ab dolores magnam.");
-   }
+   // public function testfunc() {
+   //    echo '<h1>Init metaboxes</h1>';
+   // }
 }
 
 add_action( 'init', 'backend_factory_init' );
@@ -148,10 +147,11 @@ function backend_factory_init() {
    $backendFactory -> register_cpts();
 
 
-   include_once 'tests/content-woocommerce-automatic-product.php';
+   // include_once 'tests/content-clean-products.php';
+   // include_once 'tests/content-woocommerce-automatic-product.php';
 
    // add_action("add_metaboxes", array( $backendFactory, 'register_metaboxes' ), 1 );
-   add_action("add_metaboxes", array( $backendFactory, 'testfunc' ) );
+   // add_action("add_metaboxes", array( $backendFactory, 'testfunc' ) );
 
 
    if ( !session_id() ) {

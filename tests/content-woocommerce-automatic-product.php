@@ -1,33 +1,51 @@
 <?php
 
-$title = "0";
-$user_id = 1;
-$price = 200;
-$sku = "CLCT_" . 0;
 
-$product = array(
-   'author' => $user_id,
-   'content' => 'Info del Boleto',
-   'status' => "publish",
-   'title' => $title,
-   'parent' => '',
-   'type' => "product",
-   'price' => $price,
-   'sku' => $sku,
-);
+// sleep(5);
+//
+global $wpdb;
+$wpdb->query( 'SET autocommit = 0;' );
 
-$lorem2 = "<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magni odit pariatur nisi?</p><p>Eum, odit. Ipsam nemo reiciendis minima maxime mollitia expedita, dignissimos incidunt impedit.</p>";
+create_products();
 
-$taxonomies = array(
-   array("name"=>"Tickets", "taxonomy"=>"product_cat", "description" => $lorem2 ),
-   array("name"=>"Disponibles", "taxonomy"=>"product_cat", "description" => $lorem2 )
-);
+$wpdb->query( 'COMMIT;' );
+
+function create_products() {
+
+   $lorem2 = "<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magni odit pariatur nisi?</p><p>Eum, odit. Ipsam nemo reiciendis minima maxime mollitia expedita, dignissimos incidunt impedit.</p>";
+
+   $taxonomies = array(
+      array( "name" => "Rifa" , "taxonomy" => "product_cat", "description" => $lorem2 ),
+   );
+
+   for ($i=1; $i <= 20; $i++) :
+
+      $title = str_pad($i, 3, '0', STR_PAD_LEFT);
+      $user_id = 1;
+      $price = 200;
+      $sku = "CLCT_" . $title;
+
+      $product = array(
+         'author' => $user_id,
+         'content' => 'Info del Boleto',
+         'status' => "publish",
+         'title' => $title,
+         'parent' => '',
+         'type' => "product",
+         'price' => $price,
+         'sku' => $sku,
+      );
+
+      create_product( $product, $taxonomies );
+      sleep(0.01);
+
+   endfor;
+
+
+}
 
 
 
-clean( array("product"), array("product_cat") );
-
-create_product( $product, $taxonomies );
 
 
 
@@ -45,7 +63,10 @@ function create_product( $product, $taxonomies, $product_type = 'simple' ) {
    );
 
    //Create post
-   $post_id = wp_insert_post( $post );
+   $post_id = NULL;
+
+   if( ! get_page_by_title( $post['post_title'], OBJECT, $post['post_type'] ) )
+      $post_id = wp_insert_post( $post );
 
    // var_dump($post_id);
 
@@ -138,40 +159,5 @@ function create_product( $product, $taxonomies, $product_type = 'simple' ) {
    // wp_set_object_terms( $post_id, $product_type, 'product_type');
 
 
-
-}
-
-
-
-
-
-
-function clean( $post_types, $taxonomies ) {
-
-   // clean posts
-   foreach( $post_types  as $post_type ) :
-
-      $posts_to_delete = get_posts( array( 'post_type' => $post_type, 'number' => -1 ) );
-
-      foreach( $posts_to_delete as $delete_post ) :
-
-         wp_delete_post( $delete_post->ID, true );
-
-      endforeach;
-
-   endforeach;
-
-   foreach( $taxonomies  as $taxonomy ) :
-
-      $terms = get_terms($taxonomy, array(
-         'hide_empty' => false,
-      ) );
-      $count = count($terms);
-
-      foreach ( $terms as $term ) :
-         wp_delete_term( $term->term_id, $taxonomy );
-      endforeach;
-
-   endforeach;
 
 }
