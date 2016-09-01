@@ -1,0 +1,22 @@
+.seventh {
+   width: 14.2%;
+   height: 40px;
+   float: left;
+   display: inline-block;
+   border:1px solid black; padding:5px; text-align:center; font-size:14px;
+}
+
+.calendar-view {
+      .weekday,.weekday-header {
+         @extend .seventh;
+      }
+
+   .today {
+      background-color: #222;
+      color: #fff;
+   }
+}
+
+button {
+   cursor: pointer;
+}

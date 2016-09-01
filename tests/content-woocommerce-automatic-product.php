@@ -37,7 +37,7 @@ function create_products() {
       );
 
       create_product( $product, $taxonomies );
-      sleep(0.01);
+      sleep(0.1);
 
    endfor;
 

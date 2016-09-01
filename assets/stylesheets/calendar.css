@@ -1,0 +1,18 @@
+.seventh, .calendar-view .weekday, .calendar-view .weekday-header {
+  width: 14.2%;
+  height: 40px;
+  float: left;
+  display: inline-block;
+  border: 1px solid black;
+  padding: 5px;
+  text-align: center;
+  font-size: 14px; }
+
+.calendar-view .today {
+  background-color: #222;
+  color: #fff; }
+
+button {
+  cursor: pointer; }
+
+/*# sourceMappingURL=calendar.css.map */
