@@ -41,7 +41,7 @@ class DynamicMetaboxes {
 
       // if( ! $post )
       //    return $post_id;
-
+      $errors = "debug: ";
       if(!current_user_can("edit_post", $post_id))
       return $post_id;
 
@@ -50,126 +50,130 @@ class DynamicMetaboxes {
       return $post_id;
       if( is_array( $this->metaboxes ) );
 
-$errors = "debug: ";
-
       foreach( $this->metaboxes as $metabox ) {
 
 
-         if( $metabox['post_type'] == $post->post_type || !isset($_POST[ $metabox['name']."-metabox-nonce" ]) || ! wp_verify_nonce($_POST[ $metabox['name']."-metabox-nonce" ], basename(__FILE__)))
-            return $post_id;
+         // $errors .= isset($_POST[ $metabox['name']."-metabox-nonce" ]);
+
+         if( $metabox['post_type'] == get_post($post_id)->post_type ) :
+            if( ! isset($_POST[ $metabox['name']."-metabox-nonce" ]) || ! wp_verify_nonce($_POST[ $metabox['name']."-metabox-nonce" ], basename(__FILE__)))
+               return $post_id;
 
 
-         foreach($metabox['fields'] as $field) {
+            foreach($metabox['fields'] as $field) :
 
 
-            if(isset($_POST[ $field['field_name'] ]))
-            {
+               if(isset($_POST[ $field['field_name'] ]))
+               {
 
-               $field_value = $_POST[ $field['field_name'] ];
+                  $field_value = $_POST[ $field['field_name'] ];
 
-               $field_name = $field['field_name'];
+                  $field_name = $field['field_name'];
 
-               $field_type = $field['field_type'];
+                  $field_type = $field['field_type'];
 
 
-               // update_post_meta($post_id, "test", $field_name );
-               // update_post_meta($post_id, "date" , 123 );
+                  // update_post_meta($post_id, "test", $field_name );
+                  // update_post_meta($post_id, "date" , 123 );
 
-               if( $field_type == "datebooking" ) {
+                  if( $field_type == "datebooking" ) {
 
-                  $dates = array();
+                     $dates = array();
 
-                  if(isset($_POST[ 'start_date'])) {
-                     $dates[ 'start_date' ] = $_POST[ 'start_date'];
+                     if(isset($_POST[ 'start_date'])) {
+                        $dates[ 'start_date' ] = $_POST[ 'start_date'];
+                     }
+
+                     if(isset($_POST[ 'end_date'])) {
+                        $dates[ 'end_date' ] = $_POST[ 'end_date'];
+                     }
+
+                     if(isset($_POST[ 'schedule'])) {
+                        $dates[ 'schedule' ] = $_POST[ 'schedule'];
+                     }
+
+                     if(isset($_POST[ 'place'])) {
+                        $dates[ 'place' ] = $_POST[ 'place'];
+                     }
+
+                     if(isset($_POST[ 'start_date'])) {
+                        $dates[ 'start_date' ] = $_POST[ 'start_date'];
+                     }
+
+                     update_post_meta(
+                     $post_id,
+                     'dates',
+                     $dates
+                     );
+
+                  } elseif( $field_type == "related_post" ) {
+
+                     $related_post_ids = $field_value;
+
+                     if( is_array($field_value) ) {
+
+                        foreach( $related_post_ids as $related_post_id ) {
+
+                           $related_post_type = $field['related_post_types'];
+                           $related_post_type = $related_post_type[0];
+
+                           $field_name = $metabox['post_type'] . '-' .  $related_post_type;
+                           $field_value = $_POST[ '$field_name' ];
+
+                           // checar si hay arreglo de referencias a posts 1 en post 2 recien asignado
+                           $posts = get_post_meta(
+                           $related_post_id,
+                           $field_name,
+                           true
+                           );
+
+                           if( is_array($posts) ) {
+                              if( ! in_array($post_id,$post_id))
+                              array_push($posts, $post_id);
+                           } else {
+                              // si no, crear arreglo
+                              $posts = array( $post_id );
+                           }
+
+
+                           update_post_meta(
+                           $related_post_id,
+                           $field_name,
+                           array_unique($posts)
+                           );
+
+                        }
+                     }
+
                   }
 
-                  if(isset($_POST[ 'end_date'])) {
-                     $dates[ 'end_date' ] = $_POST[ 'end_date'];
-                  }
+                  // $error = false;
+                  //
+                  // // Do stuff.
+                  // $woops=1;
+                  // if ($woops) {
+                  //    $error = new WP_Error($code, $msg);
+                  // }
+                  //
+                  // if ($error) {
+                  //    $_SESSION['backend-factory-errors'] = $error->get_error_message();
+                  // }
 
-                  if(isset($_POST[ 'schedule'])) {
-                     $dates[ 'schedule' ] = $_POST[ 'schedule'];
-                  }
-
-                  if(isset($_POST[ 'place'])) {
-                     $dates[ 'place' ] = $_POST[ 'place'];
-                  }
-
-                  if(isset($_POST[ 'start_date'])) {
-                     $dates[ 'start_date' ] = $_POST[ 'start_date'];
-                  }
 
                   update_post_meta(
                   $post_id,
-                  'dates',
-                  $dates
+                  $field_name,
+                  $field_value
+
                   );
 
-               } elseif( $field_type == "related_post" ) {
-
-                  $related_post_ids = $field_value;
-
-                  if( is_array($field_value) ) {
-
-                     foreach( $related_post_ids as $related_post_id ) {
-
-                        $related_post_type = $field['related_post_types'];
-                        $related_post_type = $related_post_type[0];
-
-                        $field_name = $metabox['post_type'] . '-' .  $related_post_type;
-                        $field_value = $_POST[ '$field_name' ];
-
-                        // checar si hay arreglo de referencias a posts 1 en post 2 recien asignado
-                        $posts = get_post_meta(
-                        $related_post_id,
-                        $field_name,
-                        true
-                        );
-
-                        if( is_array($posts) ) {
-                           if( ! in_array($post_id,$post_id))
-                           array_push($posts, $post_id);
-                        } else {
-                           // si no, crear arreglo
-                           $posts = array( $post_id );
-                        }
-
-
-                        update_post_meta(
-                        $related_post_id,
-                        $field_name,
-                        array_unique($posts)
-                        );
-
-                     }
-                  }
 
                }
 
-               // $error = false;
-               //
-               // // Do stuff.
-               // $woops=1;
-               // if ($woops) {
-               //    $error = new WP_Error($code, $msg);
-               // }
-               //
-               // if ($error) {
-               //    $_SESSION['backend-factory-errors'] = $error->get_error_message();
-               // }
+            endforeach;
 
+         endif;
 
-               update_post_meta(
-               $post_id,
-               $field_name,
-               $field_value
-
-               );
-
-
-            }
-
-         }
          $_SESSION['backend-factory-errors'] = $errors;
 
 
@@ -183,11 +187,11 @@ $errors = "debug: ";
 
 
    public function standard_metabox_html( $post,  $callback_args ) {
-
       $args = $callback_args['args'];
       $metabox = $args['metabox'];
 
       wp_nonce_field(basename(__FILE__), $metabox['name']."-metabox-nonce" );
+
 
       ?>
 
@@ -216,6 +220,7 @@ $errors = "debug: ";
 
 
             $value = get_post_meta( $post->ID, $field['field_name'], true);
+
 
 
             if( $field['field_type'] == "related_post" ) {
@@ -288,10 +293,9 @@ $errors = "debug: ";
                      <?php echo $field['field_label']; ?>
                   </h4>
                   <div class="columns p4">
-                     <textarea name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>">
-                        <?php echo $value; ?>
-                     </textarea>
+                     <textarea name="<?php echo $field['field_name']; ?>"><?php echo $value; ?></textarea>
                   </div>
+
                </div>
 
                <?php
@@ -317,7 +321,9 @@ $errors = "debug: ";
 
                <div class="columns">
                   <h4>Hora</h4>
+
                   <div class="columns p4"><input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>"></div>
+
                </div>
 
                <?php
