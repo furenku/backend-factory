@@ -289,6 +289,8 @@ $errors = "debug: ";
                   </h4>
                   <div class="columns p4">
                      <textarea name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>">
+                        <?php echo $value; ?>
+                     </textarea>
                   </div>
                </div>
 
@@ -315,7 +317,7 @@ $errors = "debug: ";
 
                <div class="columns">
                   <h4>Hora</h4>
-                  <div class="columns p4"><input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $time; ?>"></div>
+                  <div class="columns p4"><input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>"></div>
                </div>
 
                <?php
