@@ -215,6 +215,7 @@ $errors = "debug: ";
             echo '<div class="field_inputs">';
 
 
+            $value = get_post_meta( $post->ID, $field['field_name'], true);
 
 
             if( $field['field_type'] == "related_post" ) {
@@ -266,14 +267,29 @@ $errors = "debug: ";
 
             if( $field['field_type'] == "text" ) {
 
-               $date = get_post_meta( $post->ID, $field['field_name'], true);
                ?>
 
                <div class="columns">
                   <h4>
                      <?php echo $field['field_label']; ?>
                   </h4>
-                  <div class="columns p4"><input type="text" name="<?php echo $field['field_name']; ?>" value="<?php echo $date; ?>"></div>
+                  <div class="columns p4"><input type="text" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>"></div>
+               </div>
+
+               <?php
+
+            }
+
+            if( $field['field_type'] == "textarea" ) {
+               ?>
+
+               <div class="columns">
+                  <h4>
+                     <?php echo $field['field_label']; ?>
+                  </h4>
+                  <div class="columns p4">
+                     <textarea name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>">
+                  </div>
                </div>
 
                <?php
@@ -282,12 +298,11 @@ $errors = "debug: ";
 
             if( $field['field_type'] == "date" ) {
 
-               $date = get_post_meta( $post->ID, $field['field_name'], true);
                ?>
 
                <div class="columns">
                   <h4>Fecha</h4>
-                  <div class="columns p4"><input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $date; ?>"></div>
+                  <div class="columns p4"><input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>"></div>
                </div>
 
                <?php
@@ -296,12 +311,11 @@ $errors = "debug: ";
 
             if( $field['field_type'] == "time" ) {
 
-               $date = get_post_meta( $post->ID, $field['field_name'], true);
                ?>
 
                <div class="columns">
                   <h4>Hora</h4>
-                  <div class="columns p4"><input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $date; ?>"></div>
+                  <div class="columns p4"><input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $time; ?>"></div>
                </div>
 
                <?php
@@ -309,7 +323,6 @@ $errors = "debug: ";
             }
             if( $field['field_type'] == "integer" ) {
 
-               $value = get_post_meta( $post->ID, $field['field_name'], true);
                ?>
 
                <div class="columns">
@@ -320,7 +333,7 @@ $errors = "debug: ";
                   </p>
 
                   <div class="columns p4">
-                     <input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>">
+                     <input type="number" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>">
                   </div>
 
                </div>
