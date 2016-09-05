@@ -3,43 +3,38 @@
 global $metaboxes;
 
 
-$fields = array();
 
-for ($i=1; $i <= 10; $i++) {
-   $field = array(
-      'field_name'            => 'listado-artista-'.$i,
-      'field_type'            => 'text',
-      'repeatable'            => false,
-      'field_label'           => 'Artista '.$i,
-      'markup_function'       => 'standard_metabox_html'
-   );
-
-   array_push($fields, $field);
-
-
-   $field = array(
-      'field_name'            => 'listado-cancion-'.$i,
-      'field_type'            => 'text',
-      'repeatable'            => false,
-      'field_label'           => 'Canción '.$i,
-      'markup_function'       => 'standard_metabox_html'
-   );
-
-   array_push($fields, $field);
-
-}
 
 $metaboxes = array(
 
-   'top10-listado'=>array(
+   'test-metabox'=>array(
 
-      'post_type'    => 'top-10',
-      'name'         => 'top10-listado',
-      'title'        => 'Listado',
+      'post_type'    => 'test-cpt',
+      'name'         => 'test-cpt-metabox',
+      'title'        => 'Test CPT Metabox',
 
-      'description'  => 'Selecciona los artistas y canciones',
+      'description'  => 'Fill in Custom Fields',
 
-      'fields' => $fields
+      'fields' => array(
+
+         array(
+            'field_name'            => 'test-metabox-field-1',
+            'field_type'            => 'text',
+            'repeatable'            => false,
+            'field_label'           => 'Test Field 1',
+            'description'           => 'A custom field.',
+            'markup_function'       => 'standard_metabox_html'
+         ),
+         array(
+            'field_name'            => 'test-metabox-field-2',
+            'field_type'            => 'text',
+            'repeatable'            => false,
+            'field_label'           => 'Test Field 2',
+            'description'           => 'A custom field.',
+            'markup_function'       => 'standard_metabox_html'
+         )
+
+      )
    ),
 
 

@@ -5,31 +5,17 @@ global $cpts;
 $cpts = array(
 
    array(
-      'post_type' => 'top-10',
+      'post_type' => 'test-cpt',
       'hierarchical' => 'false',
-      'singular' => "Top 10",
-      'plural' => "Top 10"
-   )
-   ,
+      'singular' => "Test CPT",
+      'plural' => "Test CPTs"
+   ),
+   
    array(
-      'post_type' => 'promo',
+      'post_type' => 'another-cpt',
       'hierarchical' => 'false',
-      'singular' => "Promoción",
-      'plural' => "Promociones",
-   )
-   ,
-   array(
-      'post_type' => 'red',
-      'hierarchical' => 'false',
-      'singular' => "Red",
-      'plural' => "Redes",
-   )
-   ,
-   array(
-      'post_type' => 'galeria',
-      'hierarchical' => 'false',
-      'singular' => "Galería",
-      'plural' => "Galerías",
+      'singular' => "Another CPT",
+      'plural' => "Another CPTs"
    )
 
 );
