@@ -307,8 +307,13 @@ class DynamicMetaboxes {
                ?>
 
                <div class="columns">
-                  <h4>Fecha</h4>
-                  <div class="columns p4"><input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>"></div>
+                  <h4>
+                     <?php echo $field['field_label']; ?>
+                  </h4>
+
+                  <div class="columns p4">
+                     <input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>">
+                  </div>
                </div>
 
                <?php

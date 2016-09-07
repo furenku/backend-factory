@@ -7,6 +7,19 @@ class BackendFactory {
 
    function init() {
       $this->cpts = array();
+      $this->load_assets();
+   }
+
+
+   function load_assets() {
+
+      wp_enqueue_style( "jquery", plugin_dir_url( __FILE__ ) . "../bower_components/jqueryui-datepicker/datepicker.css" );
+
+      wp_enqueue_script( "jquery", plugin_dir_url( __FILE__ ) . "../bower_components/jquery/dist/jquery.min.js" );
+      wp_enqueue_script( "jquery-ui-core", plugin_dir_url( __FILE__ ) . "../bower_components/jqueryui-datepicker/core.js", array('jquery') );
+      wp_enqueue_script( "jquery-ui-datepicker", plugin_dir_url( __FILE__ ) . "../bower_components/jqueryui-datepicker/datepicker.js", array('jquery') );
+
+      wp_enqueue_script( "backend-factory", plugin_dir_url( __FILE__ ) . "../assets/js/backend-factory.js", array('jquery-ui-datepicker') );
    }
 
 

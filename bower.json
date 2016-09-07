@@ -1,0 +1,31 @@
+{
+  "name": "backend-factory",
+  "homepage": "https://github.com/furenku/backend-factory",
+  "authors": [
+    "furenku <furenku@gmail.com>"
+  ],
+  "description": "Backend Factory for Wordpress",
+  "main": "index.php",
+  "moduleType": [],
+  "keywords": [
+    "custom",
+    "post",
+    "type",
+    "metaboxes",
+    "customized",
+    "backend",
+    "developers"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jqueryui-datepicker": "^0.0.3"
+  }
+}

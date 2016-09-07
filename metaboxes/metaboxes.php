@@ -37,6 +37,29 @@ $metaboxes = array(
       )
    ),
 
+   'date-cpt-date-metabox'=>array(
+
+      'post_type'    => 'date-cpt',
+      'name'         => 'date-cpt-metabox',
+      'title'        => 'Date CPT Metabox',
+
+      'description'  => 'Fill in Date',
+
+      'fields' => array(
+
+         array(
+            'field_name'            => 'test-cpt-date',
+            'field_type'            => 'date',
+            'repeatable'            => false,
+            'field_label'           => 'Date Field',
+            'description'           => 'A date field.',
+            'markup_function'       => 'standard_metabox_html'
+         ),
+         
+
+      )
+   ),
+
 
 
 

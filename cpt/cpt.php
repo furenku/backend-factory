@@ -10,12 +10,12 @@ $cpts = array(
       'singular' => "Test CPT",
       'plural' => "Test CPTs"
    ),
-   
+
    array(
-      'post_type' => 'another-cpt',
+      'post_type' => 'date-cpt',
       'hierarchical' => 'false',
-      'singular' => "Another CPT",
-      'plural' => "Another CPTs"
+      'singular' => "Date CPT",
+      'plural' => "Date CPTs"
    )
 
 );
