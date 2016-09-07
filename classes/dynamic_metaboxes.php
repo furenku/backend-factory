@@ -145,6 +145,11 @@ class DynamicMetaboxes {
                         }
                      }
 
+                  } elseif( $field_type == "date" ) {
+
+                     // $field_value = date('Y-m-d h:i:s', strtotime( $field_value ) );
+                     $field_value = date('Y-m-d', strtotime( $field_value ) );
+                     
                   }
 
                   // $error = false;
@@ -161,10 +166,9 @@ class DynamicMetaboxes {
 
 
                   update_post_meta(
-                  $post_id,
-                  $field_name,
-                  $field_value
-
+                     $post_id,
+                     $field_name,
+                     $field_value
                   );
 
 
@@ -312,7 +316,8 @@ class DynamicMetaboxes {
                   </h4>
 
                   <div class="columns p4">
-                     <input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>">
+                     <input type="datetime" data-target="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="datepicker">
+                     <input type="datetime" id="<?php echo $field['field_name']; ?>" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="hidden">
                   </div>
                </div>
 
@@ -325,7 +330,9 @@ class DynamicMetaboxes {
                ?>
 
                <div class="columns">
-                  <h4>Hora</h4>
+                  <h4>
+                     <?php echo $field['field_label']; ?>
+                  </h4>
 
                   <div class="columns p4"><input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>"></div>
 
