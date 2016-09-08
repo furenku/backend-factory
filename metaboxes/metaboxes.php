@@ -4,7 +4,7 @@ global $metaboxes;
 
 
 $test_fields = array();
-$field_types = array( "text", "url", "integer", "float", "date", "time", "textarea" );
+$field_types = array( "text", "url", "integer", "float", "date", "time", "textarea", "html" );
 
 foreach ($field_types as $field_type ) {
    $test_fields[] = array(

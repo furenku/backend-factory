@@ -151,6 +151,12 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
          $field_value = date('Y-m-d', strtotime( $field_value ) );
 
       }
+      elseif( $field_type == "html" ) {
+
+         // $field_value = date('Y-m-d h:i:s', strtotime( $field_value ) );
+         $field_value = htmlentities2($field_value);
+
+      }
 
       // $error = false;
       //
@@ -210,17 +216,9 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
          $field_name = $field['field_name'];
 
-         echo '<div class="field">';
+         echo '<div class="field '.$field['field_type'].'">';
 
 
-         // echo '<div class="field_label">';
-         //
-         // echo '<label for="'. $field['field_name'].'">'. $field['field_label'] .'</label>';
-         //
-         // echo '</div>';
-
-
-         echo '<div class="field_inputs">';
 
 
          $value = get_post_meta( $post->ID, $field['field_name'], true);
@@ -373,6 +371,30 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
          }
 
+         if( $field['field_type'] == "html" ) {
+
+            ?>
+
+            <div class="columns">
+               <?php echo html_entity_decode(get_post_meta($post->ID, $field['field_name'], true)); ?>
+            </div>
+            <div class="columns">
+
+               <h4>
+                  <?php echo $field['field_label']; ?>
+               </h4>
+
+               <div class="columns p4">
+                  <textarea name="<?php echo $field['field_name']; ?>">
+                     <?php echo $value; ?>
+                  </textarea>
+               </div>
+
+            </div>
+
+            <?php
+
+         }
 
          if( $field['field_type'] == "datebooking" ) {
 
@@ -422,7 +444,6 @@ public function standard_metabox_html( $post,  $callback_args ) {
             <?php
          }
 
-         echo '</div>';
 
          echo '</div>';
 
