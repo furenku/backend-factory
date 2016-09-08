@@ -3,7 +3,20 @@
 global $metaboxes;
 
 
+$test_fields = array();
+$field_types = array( "text", "url", "integer", "float", "date", "time", "textarea" );
 
+foreach ($field_types as $field_type ) {
+   $test_fields[] = array(
+      'field_name'            => 'test-metabox-'. $field_type .'-field',
+      'field_type'            => ''. $field_type .'',
+      'repeatable'            => false,
+      'field_label'           => ucfirst( $field_type ) . ' Field',
+      'description'           => 'A ' .$field_type .' field.',
+      'markup_function'       => 'standard_metabox_html'
+   );
+
+}
 
 $metaboxes = array(
 
@@ -15,26 +28,7 @@ $metaboxes = array(
 
       'description'  => 'Fill in Custom Fields',
 
-      'fields' => array(
-
-         array(
-            'field_name'            => 'test-metabox-field-1',
-            'field_type'            => 'text',
-            'repeatable'            => false,
-            'field_label'           => 'Test Field 1',
-            'description'           => 'A custom field.',
-            'markup_function'       => 'standard_metabox_html'
-         ),
-         array(
-            'field_name'            => 'test-metabox-field-2',
-            'field_type'            => 'text',
-            'repeatable'            => false,
-            'field_label'           => 'Test Field 2',
-            'description'           => 'A custom field.',
-            'markup_function'       => 'standard_metabox_html'
-         )
-
-      )
+      'fields' => $test_fields
    ),
 
    'date-cpt-date-metabox'=>array(
@@ -55,7 +49,7 @@ $metaboxes = array(
             'description'           => 'A date field.',
             'markup_function'       => 'standard_metabox_html'
          ),
-         
+
 
       )
    ),
