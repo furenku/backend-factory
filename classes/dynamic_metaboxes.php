@@ -374,10 +374,7 @@ public function standard_metabox_html( $post,  $callback_args ) {
          if( $field['field_type'] == "html" ) {
 
             ?>
-
-            <div class="columns">
-               <?php echo html_entity_decode(get_post_meta($post->ID, $field['field_name'], true)); ?>
-            </div>
+            
             <div class="columns">
 
                <h4>
