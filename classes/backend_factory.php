@@ -69,7 +69,8 @@ class BackendFactory {
             'has_archive'        => true,
             'hierarchical'       => $cpt['hierarchical'],
             'menu_position'      => null,
-            'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' )
+            'supports'           => array( 'title', 'editor', 'author', 'thumbnail', 'excerpt', 'comments' ),
+            'taxonomies'         => array( 'category', 'post_tag' )
          );
 
          register_post_type( $slug, $args );
