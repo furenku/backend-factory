@@ -362,7 +362,9 @@ public function standard_metabox_html( $post,  $callback_args ) {
                   <input
                   type="<?php echo $input_field_type; ?>"
                   name="<?php echo $field['field_name']; ?>"
-                  value="<?php echo $value; ?>">
+                  value="<?php echo $value; ?>"
+                  <?php echo $field_type == "float" ? 'step="0.000001"': ''; ?>
+                  >
                </div>
 
             </div>
@@ -374,7 +376,7 @@ public function standard_metabox_html( $post,  $callback_args ) {
          if( $field['field_type'] == "html" ) {
 
             ?>
-            
+
             <div class="columns">
 
                <h4>
