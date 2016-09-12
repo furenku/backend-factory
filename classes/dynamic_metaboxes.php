@@ -233,7 +233,7 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
                $related_post_type_field_name =  $field_name . '-' . $related_post_type;
 
-               $posts = get_posts( array( 'post_type' => $related_post_type ) );
+               $posts = get_posts( array( 'post_type' => $related_post_type, 'numberposts' => -1 ) );
 
                if( $field['repeatable'] ) {
 
