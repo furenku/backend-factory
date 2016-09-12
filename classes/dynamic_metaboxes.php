@@ -246,6 +246,14 @@ public function standard_metabox_html( $post,  $callback_args ) {
                $related_post_type_field_name,
                true );
 
+               ?>
+
+               <h4>
+                  <?php echo $field['field_label']; ?>
+               </h4>
+
+               <?php
+
                if(is_array($related_posts)) {
                   // if(count($related_posts)>0) {
                   foreach( $related_posts as $related_post ) {
