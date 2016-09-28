@@ -41,7 +41,7 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
 
    // if( ! $post )
    //    return $post_id;
-   $errors = "debug: ";
+
    if(!current_user_can("edit_post", $post_id))
    return $post_id;
 
@@ -184,7 +184,7 @@ endforeach;
 
 endif;
 
-$_SESSION['backend-factory-errors'] = $errors;
+// $_SESSION['backend-factory-errors'] = $errors;
 
 
 // $_SESSION['backend-factory-errors'] = "should save";
