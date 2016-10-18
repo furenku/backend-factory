@@ -39,8 +39,12 @@ class DynamicMetaboxes {
 public function save_metaboxes($post_id=0, $post=0, $update=0)
 {
 
-   // if( ! $post )
-   //    return $post_id;
+   // ob_start();
+   // var_dump($_POST);
+   // $vardump = ob_get_clean();
+   // ob_end_clean();
+   // $errors .= $vardump;
+   // $errors .= "<br>";
 
    if(!current_user_can("edit_post", $post_id))
    return $post_id;
@@ -53,7 +57,6 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
    foreach( $this->metaboxes as $metabox ) {
 
 
-      // $errors .= isset($_POST[ $metabox['name']."-metabox-nonce" ]);
 
       if( $metabox['post_type'] == get_post($post_id)->post_type ) :
          if( ! isset($_POST[ $metabox['name']."-metabox-nonce" ]) || ! wp_verify_nonce($_POST[ $metabox['name']."-metabox-nonce" ], basename(__FILE__)))
@@ -61,7 +64,6 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
 
 
          foreach($metabox['fields'] as $field) :
-
 
             if(isset($_POST[ $field['field_name'] ]))
             {
@@ -166,9 +168,10 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
       //    $error = new WP_Error($code, $msg);
       // }
       //
-      // if ($error) {
-      //    $_SESSION['backend-factory-errors'] = $error->get_error_message();
-      // }
+      if ($error) {
+         $_SESSION['backend-factory-errors'] = $error->get_error_message();
+      }
+
 
 
       update_post_meta(
@@ -184,7 +187,7 @@ endforeach;
 
 endif;
 
-// $_SESSION['backend-factory-errors'] = $errors;
+$_SESSION['backend-factory-errors'] = $errors;
 
 
 // $_SESSION['backend-factory-errors'] = "should save";
@@ -289,6 +292,11 @@ public function standard_metabox_html( $post,  $callback_args ) {
                   <?php echo $field['field_label']; ?>
                </h4>
                <div class="columns p4">
+                  <?php if( $field['repeatable'] ) : ?>
+                  <div class="repeatable hidden">
+                     <textarea name="<?php echo $field['field_name']; ?>" class="repeatable hidden"><?php echo $value; ?></textarea>
+                  </div>
+                  <?php endif; ?>
                   <textarea name="<?php echo $field['field_name']; ?>"><?php echo $value; ?></textarea>
                </div>
 
@@ -308,6 +316,12 @@ public function standard_metabox_html( $post,  $callback_args ) {
                </h4>
 
                <div class="columns p4">
+                  <?php if( $field['repeatable'] ) : ?>
+                  <div class="repeatable hidden">
+                     class="repeatable hidden"
+                     <input type="datetime" data-target="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="datepicker">
+                     <input type="datetime" id="<?php echo $field['field_name']; ?>" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="hidden">
+                  <?php endif; ?>
                   <input type="datetime" data-target="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="datepicker">
                   <input type="datetime" id="<?php echo $field['field_name']; ?>" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="hidden">
                </div>
@@ -335,6 +349,7 @@ public function standard_metabox_html( $post,  $callback_args ) {
          }
          if(
          $field['field_type'] == "text"      ||
+         $field['field_type'] == "email"     ||
          $field['field_type'] == "url"       ||
          $field['field_type'] == "number"    ||
          $field['field_type'] == "integer"   ||
@@ -403,6 +418,48 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
          }
 
+         if( $field['field_type'] == "upload" ) {
+            // jQuery
+            wp_enqueue_script('jquery');
+            // This will enqueue the Media Uploader script
+            wp_enqueue_media();
+            ?>
+                <div class="columns">
+                      <h4>
+                         <?php echo $field['field_label']; ?>
+                      </h4>
+                   <div class="columns">
+                      <label for="upload_url">Select File</label>
+                      <input id="upload_url" type="url" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>">
+                      <input type="button" name="upload-btn" id="upload-btn" class="button-secondary" value="Upload File">
+                  </div>
+               </div>
+               <script type="text/javascript">
+               jQuery(document).ready(function($){
+                   $('#upload-btn').click(function(e) {
+                       e.preventDefault();
+                       var file = wp.media({
+                           title: 'Upload Image',
+                           // mutiple: true if you want to upload multiple files at once
+                           multiple: false
+                       }).open()
+                       .on('select', function(e){
+
+                           var uploaded_file = file.state().get('selection').first();
+
+                           var file_url = uploaded_file.toJSON().url;
+
+                           $('#upload_url').val(file_url);
+                       });
+                   });
+               });
+               </script>
+
+               <?php
+         }
+
+
+
          if( $field['field_type'] == "datebooking" ) {
 
             ?>
@@ -462,6 +519,7 @@ public function standard_metabox_html( $post,  $callback_args ) {
    jQuery(document).ready(function($){
 
       $('.add_repeatable').click(function(){
+console.log("add rep.");
          $(this).parent().find('.repeatable.hidden').clone().detach().removeClass('hidden').appendTo( '.repeatables' );
          $(this).parent().find('.delete_this.hidden').clone().detach().removeClass('hidden').appendTo( '.repeatables' );
       })
@@ -516,5 +574,11 @@ public function related_post_selector( $name, $posts, $id=0, $repeatable = false
 // }
 
 }
+
+function load_wp_media_files() {
+   wp_enqueue_media();
+}
+add_action( 'admin_enqueue_scripts', 'load_wp_media_files' );
+
 
 ?>

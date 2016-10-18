@@ -4,7 +4,7 @@ global $metaboxes;
 
 
 $test_fields = array();
-$field_types = array( "text", "url", "integer", "float", "date", "time", "textarea", "html" );
+$field_types = array( "text", "url", "email", "integer", "float", "date", "time", "textarea", "html", "upload" );
 
 foreach ($field_types as $field_type ) {
    $test_fields[] = array(
@@ -17,6 +17,14 @@ foreach ($field_types as $field_type ) {
    );
 
 }
+$test_fields[] = array(
+   'field_name'            => 'test-repeatable-field',
+   'field_type'            => 'text',
+   'repeatable'            => true,
+   'field_label'           => 'Repeatable Field',
+   'description'           => 'A repeatable field.',
+   'markup_function'       => 'standard_metabox_html'
+);
 
 $metaboxes = array(
 
