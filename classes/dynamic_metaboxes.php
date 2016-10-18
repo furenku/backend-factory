@@ -423,20 +423,23 @@ public function standard_metabox_html( $post,  $callback_args ) {
             wp_enqueue_script('jquery');
             // This will enqueue the Media Uploader script
             wp_enqueue_media();
+
+            $upload_input_id = "upload_input-" . $field['field_name'];
+            $upload_button_id = "upload_button-" . $field['field_name'];
             ?>
                 <div class="columns">
                       <h4>
                          <?php echo $field['field_label']; ?>
                       </h4>
                    <div class="columns">
-                      <label for="upload_url">Select File</label>
-                      <input id="upload_url" type="url" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>">
-                      <input type="button" name="upload-btn" id="upload-btn" class="button-secondary" value="Upload File">
+                      <label for="<?php echo $upload_input_id; ?>">Select File</label>
+                      <input id="<?php echo $upload_input_id; ?>" type="url" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>">
+                      <input type="button" name="<?php echo $upload_button_id; ?>" id="<?php echo $upload_button_id; ?>" class="button-secondary" value="Upload File">
                   </div>
                </div>
                <script type="text/javascript">
                jQuery(document).ready(function($){
-                   $('#upload-btn').click(function(e) {
+                   $('#<?php echo $upload_button_id; ?>').click(function(e) {
                        e.preventDefault();
                        var file = wp.media({
                            title: 'Upload Image',
@@ -449,7 +452,7 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
                            var file_url = uploaded_file.toJSON().url;
 
-                           $('#upload_url').val(file_url);
+                           $('#<?php echo $upload_input_id; ?>').val(file_url);
                        });
                    });
                });

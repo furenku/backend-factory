@@ -18,6 +18,14 @@ foreach ($field_types as $field_type ) {
 
 }
 $test_fields[] = array(
+   'field_name'            => 'test-metabox-upload-2-field',
+   'field_type'            => 'upload',
+   'repeatable'            => false,
+   'field_label'           => 'another upload',
+   'description'           => 'A repeatable field.',
+   'markup_function'       => 'standard_metabox_html'
+);
+$test_fields[] = array(
    'field_name'            => 'test-repeatable-field',
    'field_type'            => 'text',
    'repeatable'            => true,
