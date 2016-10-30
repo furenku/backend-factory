@@ -1,4 +1,6 @@
-jQuery(document).ready(function($){
+$ = jQuery.noConflict();
+
+$(document).ready(function(){
 
    var datepicker = $('input.datepicker');
 
@@ -11,6 +13,21 @@ jQuery(document).ready(function($){
 
    })
 
+   setup_repeatables();
+
    console.log("Backend Factory: ready");
 
 });
+
+
+function setup_repeatables() {
+
+   $('.add_repeatable').click(function(){
+      $(this).parent().find('.repeatable-container.hidden').clone().detach().removeClass('hidden').appendTo( '.field-repeatable-inputs' );
+   })
+
+   $('.delete_this').click(function(){
+      $(this).parent().remove();
+   })
+
+}

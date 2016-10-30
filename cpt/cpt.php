@@ -12,6 +12,13 @@ $cpts = array(
    ),
 
    array(
+      'post_type' => 'repeatable-field-cpt',
+      'hierarchical' => 'false',
+      'singular' => "Repeatable Field",
+      'plural' => "Repeatable Fields"
+   ),
+
+   array(
       'post_type' => 'date-cpt',
       'hierarchical' => 'false',
       'singular' => "Date CPT",

@@ -1,0 +1,43 @@
+.w-20,
+.w-80 {
+  float: left;
+  display: inline-block;
+  clear: none;
+  margin: 0; }
+
+.w-20 {
+  width: 20%; }
+
+.w-80 {
+  width: 80%; }
+
+.postbox {
+  padding-bottom: 45px; }
+
+.field-container {
+  height: auto;
+  padding: 7.5px;
+  background-color: #fbfcfd; }
+
+.field-inputs {
+  background-color: #f7f8f9;
+  height: auto !important;
+  padding: 15px; }
+
+.field-input-container {
+  height: 22.5px;
+  padding: 7.5px 0; }
+
+.add_repeatable {
+  clear: both;
+  float: right !important;
+  margin-top: 15px !important;
+  color: #555;
+  border-color: #ccc;
+  background: #f7f7f7; }
+
+button {
+  height: 25px;
+  padding: 3.75px; }
+
+/*# sourceMappingURL=backend-factory.css.map */

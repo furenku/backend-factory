@@ -71,6 +71,30 @@ $metaboxes = array(
    ),
 
 
+   'repeatable-field-cpt' => array(
+
+      'post_type'    => 'repeatable-field-cpt',
+      'name'         => 'repeatable-test',
+      'title'        => 'Repeatable Test',
+
+      'description'  => '',
+
+      'fields' => array(
+
+         array(
+            'field_name'            => 'repeatable-field',
+            'field_type'            => 'text',
+            'repeatable'            => true,
+            'field_label'           => 'Repeatable Field',
+            'description'           => 'A Repeatable field.',
+            'markup_function'       => 'standard_metabox_html'
+         ),
+
+
+      )
+   ),
+
+
 
 
 );

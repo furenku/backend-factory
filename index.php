@@ -5,6 +5,8 @@ Author: kernspaltung!
 Description: Backend Configuration tool for Developers
 */
 
+global $textdomain;
+$textdomain = 'backend-factory';
 
 include_once 'classes/backend_factory.php';
 include_once 'classes/dynamic_metaboxes.php';
@@ -54,6 +56,14 @@ function backend_factory_init() {
 
 
 
+
+
+
+add_action("admin_enqueue_scripts", "load_assets");
+
+function load_assets() {
+   wp_enqueue_style( 'backend-factory', plugin_dir_url(__FILE__) . "assets/css/backend-factory.css");
+}
 
 
 add_action("admin_notices","wp_errors");

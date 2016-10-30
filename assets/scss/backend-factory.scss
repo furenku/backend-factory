@@ -1,0 +1,50 @@
+$spacing: 15px;
+
+.w-20,
+.w-80 {
+   float: left;
+   display: inline-block;
+   clear: none;
+   margin: 0;
+}
+
+.w-20 {
+   width: 20%;
+}
+.w-80 {
+   width: 80%;
+}
+
+.postbox {
+padding-bottom: $spacing * 3;
+}
+.field-container {
+   height: auto;
+   padding: $spacing /2;
+   background-color: #fbfcfd;
+}
+
+.field-inputs {
+   background-color: #f7f8f9;
+   height: auto !important;
+   padding: $spacing;
+}
+
+.field-input-container {
+   height: $spacing * 1.5;
+   padding: $spacing / 2 0;
+}
+
+.add_repeatable {
+   clear: both;
+   float: right !important;
+   margin-top: $spacing !important;
+   color: #555;
+   border-color: #ccc;
+   background: #f7f7f7;
+}
+
+button {
+   height: 25px;
+   padding: $spacing / 4;
+}
