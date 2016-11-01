@@ -40,4 +40,13 @@ button {
   height: 25px;
   padding: 3.75px; }
 
+.delete_this {
+  background-color: #edebec;
+  color: red;
+  font-size: 8px; }
+  .delete_this.disabled {
+    background-color: #bdbbbc;
+    color: #eee;
+    font-size: 8px; }
+
 /*# sourceMappingURL=backend-factory.css.map */

@@ -48,3 +48,15 @@ button {
    height: 25px;
    padding: $spacing / 4;
 }
+
+.delete_this {
+   background-color: #edebec;
+   color: red;
+   font-size: 8px;
+
+   &.disabled {
+      background-color: #bdbbbc;
+      color: #eee;
+      font-size: 8px;
+   }
+}

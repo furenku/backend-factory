@@ -26,8 +26,37 @@ function setup_repeatables() {
       $(this).parent().find('.repeatable-container.hidden').clone().detach().removeClass('hidden').appendTo( '.field-repeatable-inputs' );
    })
 
+
    $('.delete_this').click(function(){
-      $(this).parent().remove();
+      if( $(this).parent().index() == $('.repeatable-container').length - 1 ) {
+
+         $(this).parent().find('input').val('');
+         $(this).parent().find('.delete_this').addClass('disabled');
+      } else {
+         $(this).parent().remove();
+      }
+      return false;
+   })
+
+   if($('.repeatable-container:not(.hidden)').length>1) {
+      $('.repeatable-container .delete_this').removeClass('disabled')
+      $('.repeatable-container').each(function(){
+         if( $(this).find('input').val().length == 0 ) {
+            $(this).find('.delete_this').addClass('disabled')
+         }
+      });
+
+   }
+
+
+   $('.repeatable-container input').keyup(function(){
+      if( $(this).val().length != 0 ) {
+console.log("test!!");
+         $(this).parent().find('.delete_this').removeClass('disabled');
+      } else {
+console.log("test!!!!");
+         $(this).parent().find('.delete_this').addClass('disabled');
+      }
    })
 
 }

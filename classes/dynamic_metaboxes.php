@@ -384,7 +384,9 @@ public function standard_metabox_html( $post,  $callback_args ) {
                   <div class="field-inputs columns p4 <?php echo $field['repeatable'] ? 'field-repeatable-inputs' : ''; ?>">
 
                      <?php
-                     echo createField( $field, $value );
+                     if( $value ) {
+                        echo  createField( $field, $value );
+                     }
                      ?>
 
                   </div>
@@ -601,69 +603,75 @@ function createField( $field, $value ) {
    }
    if( $value ) {
 
+      // if its an array value, add a hidden empty field for copying latter
       if( is_array($value) ) {
 
          foreach( $value as $one_value ) {
-            array_push( $createFields, $one_value );
-            echo $one_value;
+            // don't display any null or empty values
+            if( $one_value && $one_value != "" ) {
+               array_push( $createFields, $one_value );
+            }
          }
       } else {
-
-         array_push( $createFields, $value );
-
-      }
-   }
-   array_push( $createFields, NULL );
-
-   $i = 0;
-
-   foreach ($createFields as $fieldValue ) :
-      # code...
-      ob_start();
-
-      $class_names = "field-".$field['field_type'];
-      $container_class_names = "field-input-container";
-      $field_name = $field['field_name'];
-
-      // if( $field['field_type'] == "text" ) :
-
-
-      if( $field['repeatable'] ) {
-
-         $container_class_names .= " repeatable-container";
-         $field_name .= '[]';
-
-         $class_names .= " w-80 repeatable";
-         if( ! $fieldValue && $i == 0 ) {
-            $container_class_names .= " hidden";
+         // don't display any null or empty values
+         if($value && $value != "") {
+            array_push( $createFields, $value );
          }
-      }
-      ?>
-      <div class="<?php echo $container_class_names; ?>">
 
-         <input
-         type="<?php echo $field['field_type']; ?>"
-         name="<?php echo $field_name ?>"
-         value="<?php echo $field_value; ?>"
-         class="<?php echo $class_names; ?>"
-         <?php echo $field['field_type'] == "float" ? 'step="0.000000000001"': ''; ?>
-         <?php echo $field['field_type'] == "float" ? 'step="0.000000000001"': ''; ?>
-         <?php echo $field['repeatable'] ? 'data-repeatable="true"': ''; ?>
-         >
-         <?php
+      }
+
+      // add an empty field for the user:
+      array_push( $createFields, NULL );
+
+      $i = 0;
+
+      foreach ($createFields as $field_value ) :
+         # code...
+         ob_start();
+
+         $class_names = "field-".$field['field_type'];
+         $container_class_names = "field-input-container";
+         $field_name = $field['field_name'];
+
+         // if( $field['field_type'] == "text" ) :
+
+
          if( $field['repeatable'] ) {
 
-            ?>
-            <button class="w-20 delete_this">x</button>
-            <?php
+            $container_class_names .= " repeatable-container";
+            $field_name .= '[]';
+
+            $class_names .= " w-80 repeatable";
+            if( ! $field_value && $i == 0 ) {
+               $container_class_names .= " hidden";
+            }
          }
          ?>
-      </div>
-      <?php
-      // endif;
-      $i++;
-   endforeach;
+         <div class="<?php echo $container_class_names; ?>">
 
+            <input
+            type="<?php echo $field['field_type']; ?>"
+            name="<?php echo $field_name ?>"
+            value="<?php echo $field_value; ?>"
+            class="<?php echo $class_names; ?>"
+            <?php echo $field['field_type'] == "float" ? 'step="0.000000000001"': ''; ?>
+            <?php echo $field['field_type'] == "float" ? 'step="0.000000000001"': ''; ?>
+            <?php echo $field['repeatable'] ? 'data-repeatable="true"': ''; ?>
+            >
+            <?php
+            if( $field['repeatable'] ) {
+
+               ?>
+               <button class="w-20 delete_this">remove</button>
+               <?php
+            }
+            ?>
+         </div>
+         <?php
+         // endif;
+         $i++;
+      endforeach;
+   }
    $html = ob_get_contents();
    ob_end_clean();
    return $html;
