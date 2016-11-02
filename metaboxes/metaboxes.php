@@ -7,32 +7,16 @@ $test_fields = array();
 $field_types = array( "text", "url", "email", "integer", "float", "date", "time", "textarea", "html", "upload" );
 
 foreach ($field_types as $field_type ) {
+
    $test_fields[] = array(
       'field_name'            => 'test-metabox-'. $field_type .'-field',
       'field_type'            => ''. $field_type .'',
-      'repeatable'            => false,
+      'repeatable'            => true,
       'field_label'           => ucfirst( $field_type ) . ' Field',
       'description'           => 'A ' .$field_type .' field.',
-      'markup_function'       => 'standard_metabox_html'
    );
 
 }
-$test_fields[] = array(
-   'field_name'            => 'test-metabox-upload-2-field',
-   'field_type'            => 'upload',
-   'repeatable'            => false,
-   'field_label'           => 'another upload',
-   'description'           => 'A repeatable field.',
-   'markup_function'       => 'standard_metabox_html'
-);
-$test_fields[] = array(
-   'field_name'            => 'test-repeatable-field',
-   'field_type'            => 'text',
-   'repeatable'            => true,
-   'field_label'           => 'Repeatable Field',
-   'description'           => 'A repeatable field.',
-   'markup_function'       => 'standard_metabox_html'
-);
 
 $metaboxes = array(
 
@@ -42,9 +26,32 @@ $metaboxes = array(
       'name'         => 'test-cpt-metabox',
       'title'        => 'Test CPT Metabox',
 
-      'description'  => 'Fill in Custom Fields',
+      'description'  => 'Test all Field Types',
 
       'fields' => $test_fields
+   ),
+
+   'related-metabox'=>array(
+
+      'post_type'    => 'related-post-type',
+      'name'         => 'related-post-type-metabox',
+      'title'        => 'Related Post Type',
+
+      'description'  => 'Related Post Types',
+
+      'fields' => array(
+         array(
+            'field_name'            => 'related-post-type-test-cpt',
+
+            'field_type'            => 'related_post',
+            'repeatable'            => true,
+            'related_post_types'    => array('test-cpt'),
+
+            'field_label'           => 'Related Post Type Posts',
+            'description'           => '',
+            'markup_function'       => 'standard_metabox_markup'
+            ),
+      )
    ),
 
    'date-cpt-date-metabox'=>array(

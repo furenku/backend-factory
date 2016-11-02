@@ -18,30 +18,42 @@ $spacing: 15px;
 .postbox {
 padding-bottom: $spacing * 3;
 }
+
 .field-container {
    height: auto;
    padding: $spacing /2;
    background-color: #fbfcfd;
 }
 
+
 .field-inputs {
    background-color: #f7f8f9;
    height: auto !important;
    padding: $spacing;
+
+   .input-container {
+      height: auto;
+      padding: $spacing /2;
+      background-color: #fbfcfd;
+      margin-bottom: $spacing/2;
+   }
+
 }
 
+
 .field-input-container {
-   height: $spacing * 1.5;
+   // height: $spacing * 1.5;
    padding: $spacing / 2 0;
 }
 
 .add_repeatable {
    clear: both;
    float: right !important;
-   margin-top: $spacing !important;
+   margin-top: $spacing /4 !important;
    color: #555;
    border-color: #ccc;
    background: #f7f7f7;
+   font-size: 10px !important;
 }
 
 button {

@@ -12,6 +12,13 @@ $cpts = array(
    ),
 
    array(
+      'post_type' => 'date-cpt',
+      'hierarchical' => 'false',
+      'singular' => "Date CPT",
+      'plural' => "Date CPTs"
+   ),
+
+   array(
       'post_type' => 'repeatable-field-cpt',
       'hierarchical' => 'false',
       'singular' => "Repeatable Field",
@@ -19,11 +26,12 @@ $cpts = array(
    ),
 
    array(
-      'post_type' => 'date-cpt',
+      'post_type' => 'related-post-type',
       'hierarchical' => 'false',
-      'singular' => "Date CPT",
-      'plural' => "Date CPTs"
-   )
+      'singular' => "Post with Related Post Type",
+      'plural' => "Posts with Related Post Type"
+   ),
+
 
 );
 

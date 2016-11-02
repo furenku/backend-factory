@@ -23,18 +23,23 @@
   background-color: #f7f8f9;
   height: auto !important;
   padding: 15px; }
+  .field-inputs .input-container {
+    height: auto;
+    padding: 7.5px;
+    background-color: #fbfcfd;
+    margin-bottom: 7.5px; }
 
 .field-input-container {
-  height: 22.5px;
   padding: 7.5px 0; }
 
 .add_repeatable {
   clear: both;
   float: right !important;
-  margin-top: 15px !important;
+  margin-top: 3.75px !important;
   color: #555;
   border-color: #ccc;
-  background: #f7f7f7; }
+  background: #f7f7f7;
+  font-size: 10px !important; }
 
 button {
   height: 25px;
