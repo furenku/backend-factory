@@ -3,12 +3,14 @@
 class DynamicMetaboxes {
 
    var $metaboxes;
+   var $field_creator;
 
-   public function init() {
+   public function __construct() {
       $this->metaboxes = array();
       add_action("add_meta_boxes", array( $this, 'register_metaboxes' ) );
       add_action("save_post", array( $this, 'save_metaboxes' ) );
 
+      $this->field_creator = new MetaboxFieldCreator();
 
       // echo "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laborum praesentium odit sunt adipisci sequi, eaque tenetur quae libero!";
    }
@@ -187,7 +189,7 @@ endforeach;
 
 endif;
 
-$_SESSION['backend-factory-errors'] = $errors;
+//$_SESSION['backend-factory-errors'] = $errors;
 
 
 // $_SESSION['backend-factory-errors'] = "should save";
@@ -199,7 +201,139 @@ $_SESSION['backend-factory-errors'] = $errors;
 }
 
 
+
 public function standard_metabox_html( $post,  $callback_args ) {
+   $args = $callback_args['args'];
+   $metabox = $args['metabox'];
+
+   wp_nonce_field(basename(__FILE__), $metabox['name']."-metabox-nonce" );
+
+
+   ?>
+   <div class="metabox">
+
+      <p>
+         <?php echo $metabox['description']; ?>
+      </p>
+
+      <div class="metabox-fields">
+         <?php
+
+
+
+
+         foreach($metabox['fields'] as $field ) :
+            ?>
+            <div class="field-container">
+               <?php
+
+               $container_classes = "field-inputs ";
+               $container_classes .= 'field-' . $field['field_type'];
+               $container_classes .= $field['repeatable'] ? " field-repeatable-inputs" : "";
+
+               if( $field['repeatable'] ) :
+                  ?>
+
+                  <div class="repeatable-model hidden">
+                     <div class="input-container">
+                        <?php
+                        $value = NULL;
+                        echo $this->field_creator->create_field( $field, $value );
+                        ?>
+                     </div>
+                  </div>
+
+               <?php endif; ?>
+
+               <h4>
+                  <?php echo $field['field_label']; ?>
+               </h4>
+
+               <div class="<?php echo $container_classes; ?>">
+                  <?php
+                  $value = get_post_meta( $post->ID, $field['field_name'], true);
+                  $valueArray = array();
+
+                  if( ! $value ) {
+                     // If field is empty, show an empty form component:
+                     array_push( $valueArray, NULL );
+
+                  } else {
+                     // if this field's value is an array:
+                     if( is_array($value) ) {
+
+                        foreach( $value as $one_value ) {
+                           // don't display any null or empty values
+                           if( $one_value && $one_value != "" ) {
+                              array_push( $valueArray, $one_value );
+                           }
+                        }
+
+                        // add an empty one for repeatables
+                        array_push( $valueArray, NULL );
+
+                     } else {
+
+                        // don't display any null or empty values
+                        if($value && $value != "") {
+                           array_push( $valueArray, $value );
+                        }
+
+
+                     }
+                  }
+
+
+                  foreach ($valueArray as $field_value ) :
+                     ?>
+                     <div class="input-container">
+                        <?php
+                        echo $this->field_creator->create_field( $field, $field_value );
+                        ?>
+                     </div>
+
+
+                  <?php endforeach; ?>
+
+
+               </div>
+
+               <?php
+
+               if( $field['repeatable'] ) {
+                  ?>
+
+                  <button class="add_repeatable button">
+                     Add Another
+                  </button>
+
+                  <?php
+               }
+
+               ?>
+            </div>
+            <?php
+         endforeach;
+
+         ?>
+
+
+
+      </div>
+
+   </div>
+
+
+   <?php
+}
+
+
+
+
+
+
+
+public function old_metabox_html( $post,  $callback_args ) {
    $args = $callback_args['args'];
    $metabox = $args['metabox'];
 
@@ -227,7 +361,6 @@ public function standard_metabox_html( $post,  $callback_args ) {
          $value = get_post_meta( $post->ID, $field['field_name'], true);
 
 
-
          if( $field['field_type'] == "related_post" ) {
 
             foreach ($field['related_post_types'] as $related_post_type ) {
@@ -239,8 +372,8 @@ public function standard_metabox_html( $post,  $callback_args ) {
                $posts = get_posts( array( 'post_type' => $related_post_type, 'numberposts' => -1 ) );
 
                if( $field['repeatable'] ) {
-
-                  $this -> related_post_selector( $related_post_type_field_name, $posts, 0, true, true );
+                  $related_post_type_field_name .= '[]';
+                  $field_creator -> related_post_selector( $related_post_type_field_name, $posts, 0, true, true );
 
                }
 
@@ -257,11 +390,13 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
                <?php
 
+
                if(is_array($related_posts)) {
                   // if(count($related_posts)>0) {
                   foreach( $related_posts as $related_post ) {
-                     if( $related_post != "0" )
-                     $this -> related_post_selector( $related_post_type_field_name, $posts, $related_post, $field['repeatable'] );
+                     if( $related_post != "0" ) {
+                        $field_creator -> related_post_selector( $related_post_type_field_name, $posts, $related_post, $field['repeatable'] );
+                     }
                   }
                   // } else {
                   //    if( ! $field['repeatable'] )
@@ -270,12 +405,12 @@ public function standard_metabox_html( $post,  $callback_args ) {
                } else {
                   if( ! $field['repeatable'] ) {
 
-                     $this -> related_post_selector( $related_post_type_field_name, $posts, (int)$related_posts, $field['repeatable'] );
+                     $field_creator -> related_post_selector( $related_post_type_field_name, $posts, (int)$related_posts, $field['repeatable'] );
                   }
                }
 
                if( $field['repeatable'] ) {
-                  $this -> related_post_selector( $related_post_type_field_name, $posts, $field['repeatable']  );
+                  $field_creator -> related_post_selector( $related_post_type_field_name, $posts, $field['repeatable']  );
                }
 
             }
@@ -310,252 +445,182 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
             ?>
 
+            <h4>
+               <?php echo $field['field_label']; ?>
+            </h4>
+
+            <div class="columns p4">
+               <?php if( $field['repeatable'] ) : ?>
+                  <div class="repeatable hidden">
+                     class="repeatable hidden"
+                     <input type="datetime" data-target="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="datepicker">
+                     <input type="datetime" id="<?php echo $field['field_name']; ?>" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="hidden">
+                  <?php endif; ?>
+                  <input type="datetime" data-target="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="datepicker">
+                  <input type="datetime" id="<?php echo $field['field_name']; ?>" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="hidden">
+               </div>
+            </div>
+
+            <?php
+
+         }
+
+         if( $field['field_type'] == "time" ) {
+
+            ?>
+
             <div class="columns">
                <h4>
                   <?php echo $field['field_label']; ?>
                </h4>
 
-               <div class="columns p4">
-                  <?php if( $field['repeatable'] ) : ?>
-                     <div class="repeatable hidden">
-                        class="repeatable hidden"
-                        <input type="datetime" data-target="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="datepicker">
-                        <input type="datetime" id="<?php echo $field['field_name']; ?>" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="hidden">
-                     <?php endif; ?>
-                     <input type="datetime" data-target="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="datepicker">
-                     <input type="datetime" id="<?php echo $field['field_name']; ?>" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="hidden">
-                  </div>
+               <div class="columns p4"><input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>"></div>
+
+            </div>
+
+            <?php
+
+         }
+         if(
+         $field['field_type'] == "text"      ||
+         $field['field_type'] == "email"     ||
+         $field['field_type'] == "url"       ||
+         $field['field_type'] == "number"    ||
+         $field['field_type'] == "integer"   ||
+         $field['field_type'] == "float"
+         ) {
+            $field_type = $field['field_type'];
+
+            $input_field_type = $field_type;
+
+            switch( $field_type ) {
+               case "integer" :
+               case "float" :
+               $input_field_type = "number";
+               break;
+               default :
+               $input_field_type = $field_type;
+               break;
+
+            }
+            ?>
+
+            <div class="field columns">
+
+               <h4>
+                  <?php echo $field['field_label']; ?>
+               </h4>
+
+               <p>
+                  <?php echo $field['description']; ?>
+               </p>
+
+               <div class="field-inputs columns p4 <?php echo $field['repeatable'] ? 'field-repeatable-inputs' : ''; ?>">
+
+                  <?php
+                  if( $value ) {
+                     echo $field_creator -> form_input( $field, $value );
+                  }
+                  ?>
+
+               </div>
+
+               <?php if( $field['repeatable'] ) { ?>
+
+                  <button class="add_repeatable button">
+                     Add Another
+                  </button>
+
+                  <?php } ?>
+
                </div>
 
                <?php
 
             }
 
-            if( $field['field_type'] == "time" ) {
+            if( $field['field_type'] == "html" ) {
 
                ?>
 
                <div class="columns">
+
                   <h4>
                      <?php echo $field['field_label']; ?>
                   </h4>
 
-                  <div class="columns p4"><input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>"></div>
+                  <div class="columns p4">
+                     <textarea name="<?php echo $field['field_name']; ?>">
+                        <?php echo $value; ?>
+                     </textarea>
+                  </div>
 
                </div>
 
                <?php
 
             }
-            if(
-            $field['field_type'] == "text"      ||
-            $field['field_type'] == "email"     ||
-            $field['field_type'] == "url"       ||
-            $field['field_type'] == "number"    ||
-            $field['field_type'] == "integer"   ||
-            $field['field_type'] == "float"
-            ) {
-               $field_type = $field['field_type'];
 
-               $input_field_type = $field_type;
+            if( $field['field_type'] == "upload" ) {
+               // jQuery
+               wp_enqueue_script('jquery');
+               // This will enqueue the Media Uploader script
+               wp_enqueue_media();
 
-               switch( $field_type ) {
-                  case "integer" :
-                  case "float" :
-                  $input_field_type = "number";
-                  break;
-                  default :
-                  $input_field_type = $field_type;
-                  break;
-
-               }
+               $upload_input_id = "upload_input-" . $field['field_name'];
+               $upload_button_id = "upload_button-" . $field['field_name'];
                ?>
-
-               <div class="field columns">
-
+               <div class="columns">
                   <h4>
                      <?php echo $field['field_label']; ?>
                   </h4>
-
-                  <p>
-                     <?php echo $field['description']; ?>
-                  </p>
-
-                  <div class="field-inputs columns p4 <?php echo $field['repeatable'] ? 'field-repeatable-inputs' : ''; ?>">
-
-                     <?php
-                     if( $value ) {
-                        echo  createField( $field, $value );
-                     }
-                     ?>
-
-                  </div>
-
-                  <?php if( $field['repeatable'] ) { ?>
-
-                     <button class="add_repeatable button">
-                        Add Another
-                     </button>
-
-                     <?php } ?>
-
-                  </div>
-
-                  <?php
-
-               }
-
-               if( $field['field_type'] == "html" ) {
-
-                  ?>
-
                   <div class="columns">
-
-                     <h4>
-                        <?php echo $field['field_label']; ?>
-                     </h4>
-
-                     <div class="columns p4">
-                        <textarea name="<?php echo $field['field_name']; ?>">
-                           <?php echo $value; ?>
-                        </textarea>
-                     </div>
-
+                     <label for="<?php echo $upload_input_id; ?>">Select File</label>
+                     <input id="<?php echo $upload_input_id; ?>" type="url" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>">
+                     <input type="button" name="<?php echo $upload_button_id; ?>" id="<?php echo $upload_button_id; ?>" class="button-secondary" value="Upload File">
                   </div>
+               </div>
+               <script type="text/javascript">
+               jQuery(document).ready(function($){
+                  $('#<?php echo $upload_button_id; ?>').click(function(e) {
+                     e.preventDefault();
+                     var file = wp.media({
+                        title: 'Upload Image',
+                        // mutiple: true if you want to upload multiple files at once
+                        multiple: false
+                     }).open()
+                     .on('select', function(e){
 
-                  <?php
+                        var uploaded_file = file.state().get('selection').first();
 
-               }
+                        var file_url = uploaded_file.toJSON().url;
 
-               if( $field['field_type'] == "upload" ) {
-                  // jQuery
-                  wp_enqueue_script('jquery');
-                  // This will enqueue the Media Uploader script
-                  wp_enqueue_media();
-
-                  $upload_input_id = "upload_input-" . $field['field_name'];
-                  $upload_button_id = "upload_button-" . $field['field_name'];
-                  ?>
-                  <div class="columns">
-                     <h4>
-                        <?php echo $field['field_label']; ?>
-                     </h4>
-                     <div class="columns">
-                        <label for="<?php echo $upload_input_id; ?>">Select File</label>
-                        <input id="<?php echo $upload_input_id; ?>" type="url" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>">
-                        <input type="button" name="<?php echo $upload_button_id; ?>" id="<?php echo $upload_button_id; ?>" class="button-secondary" value="Upload File">
-                     </div>
-                  </div>
-                  <script type="text/javascript">
-                  jQuery(document).ready(function($){
-                     $('#<?php echo $upload_button_id; ?>').click(function(e) {
-                        e.preventDefault();
-                        var file = wp.media({
-                           title: 'Upload Image',
-                           // mutiple: true if you want to upload multiple files at once
-                           multiple: false
-                        }).open()
-                        .on('select', function(e){
-
-                           var uploaded_file = file.state().get('selection').first();
-
-                           var file_url = uploaded_file.toJSON().url;
-
-                           $('#<?php echo $upload_input_id; ?>').val(file_url);
-                        });
+                        $('#<?php echo $upload_input_id; ?>').val(file_url);
                      });
                   });
-                  </script>
-
-                  <?php
-               }
-
-
-
-               if( $field['field_type'] == "datebooking" ) {
-
-                  ?>
-
-                  <div class="columns">
-                     <?php
-
-                     $fechas = get_post_meta( $post_id, 'date-booking?', true );
-
-                     ?>
-                  </div>
-                  <div class="repeatable columns">
-
-                     <div>
-                        <label for="start_date">
-                           Fecha de Inicio
-                        </label>
-                        <input type="text" name="start_date" class="start_date columns date start" />
-                     </div>
-
-
-                     <div>
-                        <label for="end_date">
-                           Fecha de Final
-                        </label>
-                        <input type="text" name="end_date" class="end_date columns date end" />
-                     </div>
-
-
-                     <div>
-                        <label for="schedule">
-                           Horarios
-                        </label>
-                        <input type="text" name="schedule" class="schedule columns" value="">
-                     </div>
-                  </div>
-                  <?php
-
-               }
-
-
-
-               echo '</div>';
-
-            endforeach; ?>
-
-         </div>
-
-         <?php
-      }
-
-
-      public function related_post_selector( $name, $posts, $id=0, $repeatable = false, $hidden=false ) {
-
-
-         $name .= $repeatable ? '[]' : '';
-
-         ?>
-         <div class="<?php echo $repeatable ? 'repeatable' : ''; echo " "; echo $hidden ? 'hidden':''; ?>">
-
-            <select class="columns" name="<?php echo $name; ?>">
-               <option value="0" <?php echo ! $id ? 'selected' : ''; ?>></option>
-               <?php
-               foreach( $posts as $post ) : ?>
-
-               <option value="<?php echo $post->ID; ?>" <?php echo $id==$post->ID ? 'selected="true"' : ''; ?>>
-                  <?php echo $post->post_title; ?>
-               </option>
+               });
+               </script>
 
                <?php
-            endforeach;
-            ?>
+            }
 
-         </select>
 
-         <button class="delete_this button<?php echo $hidden ? ' hidden':''; ?>">x</button>
+
+            echo '</div>';
+
+         endforeach; ?>
 
       </div>
 
-
-      <br>
-
       <?php
    }
+
+
+
+
+
+
+
 
 
    // public function testfunc() {
@@ -584,98 +649,5 @@ add_action( 'admin_enqueue_scripts', 'load_wp_media_files' );
 
 
 
-
-
-
-function createField( $field, $value ) {
-
-   // if repeatable,
-   // get array values
-   // create input for each value in array
-   // create dummy hidden input for repeating
-
-   $createFields = array();
-
-   if( $field['repeatable'] ) {
-
-      array_push( $createFields, NULL );
-
-   }
-   if( $value ) {
-
-      // if its an array value, add a hidden empty field for copying latter
-      if( is_array($value) ) {
-
-         foreach( $value as $one_value ) {
-            // don't display any null or empty values
-            if( $one_value && $one_value != "" ) {
-               array_push( $createFields, $one_value );
-            }
-         }
-      } else {
-         // don't display any null or empty values
-         if($value && $value != "") {
-            array_push( $createFields, $value );
-         }
-
-      }
-
-      // add an empty field for the user:
-      array_push( $createFields, NULL );
-
-      $i = 0;
-
-      foreach ($createFields as $field_value ) :
-         # code...
-         ob_start();
-
-         $class_names = "field-".$field['field_type'];
-         $container_class_names = "field-input-container";
-         $field_name = $field['field_name'];
-
-         // if( $field['field_type'] == "text" ) :
-
-
-         if( $field['repeatable'] ) {
-
-            $container_class_names .= " repeatable-container";
-            $field_name .= '[]';
-
-            $class_names .= " w-80 repeatable";
-            if( ! $field_value && $i == 0 ) {
-               $container_class_names .= " hidden";
-            }
-         }
-         ?>
-         <div class="<?php echo $container_class_names; ?>">
-
-            <input
-            type="<?php echo $field['field_type']; ?>"
-            name="<?php echo $field_name ?>"
-            value="<?php echo $field_value; ?>"
-            class="<?php echo $class_names; ?>"
-            <?php echo $field['field_type'] == "float" ? 'step="0.000000000001"': ''; ?>
-            <?php echo $field['field_type'] == "float" ? 'step="0.000000000001"': ''; ?>
-            <?php echo $field['repeatable'] ? 'data-repeatable="true"': ''; ?>
-            >
-            <?php
-            if( $field['repeatable'] ) {
-
-               ?>
-               <button class="w-20 delete_this">remove</button>
-               <?php
-            }
-            ?>
-         </div>
-         <?php
-         // endif;
-         $i++;
-      endforeach;
-   }
-   $html = ob_get_contents();
-   ob_end_clean();
-   return $html;
-
-}
 
 ?>

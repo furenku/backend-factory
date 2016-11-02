@@ -23,12 +23,16 @@ $(document).ready(function(){
 function setup_repeatables() {
 
    $('.add_repeatable').click(function(){
-      $(this).parent().find('.repeatable-container.hidden').clone().detach().removeClass('hidden').appendTo( '.field-repeatable-inputs' );
+      console.log( $(this).parent().attr('class') );
+      var model = $(this).parent().find('.repeatable-model .input-container').clone().detach();
+      $(this).parent().find('.field-repeatable-inputs').append( model );
+      return false;
    })
 
 
    $('.delete_this').click(function(){
-      if( $(this).parent().index() == $('.repeatable-container').length - 1 ) {
+
+      if( $(this).parent().index() == $(this).parent().parent().find('.input-container').length - 1 ) {
 
          $(this).parent().find('input').val('');
          $(this).parent().find('.delete_this').addClass('disabled');

@@ -9,6 +9,7 @@ global $textdomain;
 $textdomain = 'backend-factory';
 
 include_once 'classes/backend_factory.php';
+include_once 'classes/metabox_fields.php';
 include_once 'classes/dynamic_metaboxes.php';
 
 include_once 'cpt/cpt.php';
@@ -26,13 +27,9 @@ function backend_factory_init() {
 
    global $cpts, $metaboxes;
 
-   $backendFactory = new BackendFactory;
+   $backendFactory = new BackendFactory();
 
-   $backendFactory->init();
-
-   $dynamic_metaboxes = new DynamicMetaboxes;
-
-   $dynamic_metaboxes -> init();
+   $dynamic_metaboxes = new DynamicMetaboxes();
 
 
    foreach( $cpts as $cpt ) {

@@ -5,7 +5,7 @@ class BackendFactory {
 
    var $cpts;
 
-   function init() {
+   function __construct() {
       $this->cpts = array();
       $this->load_assets();
    }
