@@ -26,7 +26,7 @@ $cpts = array(
    ),
 
    array(
-      'post_type' => 'related-post-type',
+      'post_type' => 'rpt',
       'hierarchical' => 'false',
       'singular' => "Post with Related Post Type",
       'plural' => "Posts with Related Post Type"

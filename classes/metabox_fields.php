@@ -39,6 +39,7 @@ class MetaboxFieldCreator {
          break;
 
          case 'related_post' :
+
          $html .= $this->related_post( $field, $value );
          break;
 
@@ -113,61 +114,29 @@ class MetaboxFieldCreator {
    public function related_post( $field, $value ) {
 
       $related_posts = $value;
+      ob_start();
 
 
       if( is_array( $field['related_post_types'] ) )
       foreach ($field['related_post_types'] as $related_post_type ) {
 
-         $related_post_type_field_name =  $metabox['post_type'] . '-' . $related_post_type;
-
-         $posts = get_posts( array( 'post_type' => $related_post_type, 'numberposts' => -1 ) );
+         $related_post_type_posts = get_posts( array( 'post_type' => $related_post_type, 'numberposts' => -1 ) );
 
 
          if( $field['repeatable'] ) {
             $related_post_type_field_name .= '[]';
-            $this -> related_post_selector( $related_post_type_field_name, $posts, 0, true, true );
-         }
 
-         if(is_array($related_posts)) {
+            $field_name .= $repeatable ? '[]' : '';
+            ?>
 
-            foreach( $related_posts as $related_post ) {
-               if( $related_post != "0" ) {
-                  $this -> related_post_selector( $related_post_type_field_name, $posts, $related_post, $field['repeatable'] );
-               }
-            }
+            <select
+            name="<?php echo $field['repeatable'] ? $field['field_name'] . '[]' : $field['field_name']; ?>"
+            class="columns <?php echo $field['repeatable'] ? 'w-80' : ''; ?>">
 
-         } else {
-            if( ! $field['repeatable'] ) {
-               $this -> related_post_selector( $related_post_type_field_name, $posts, (int)$related_posts, $field['repeatable'] );
-            }
-         }
+            <option value="0" <?php echo ! $value ? 'selected' : ''; ?>></option>
+            <?php foreach( $related_post_type_posts as $related_post ) : ?>
 
-         if( $field['repeatable'] ) {
-            $this -> related_post_selector( $related_post_type_field_name, $posts, $field['repeatable']  );
-         }
-
-      }
-
-
-   }
-
-
-
-
-   // Custom Form Components:
-
-   public function related_post_selector( $name, $related_posts, $id=0, $repeatable = false, $hidden=false ) {
-
-
-      $name .= $repeatable ? '[]' : '';
-      ?>
-      <div class="<?php echo $repeatable ? 'repeatable' : ''; echo " "; echo $hidden ? 'hidden':''; ?>">
-
-         <select class="columns w-80" name="<?php echo $name; ?>">
-            <option value="0" <?php echo ! $id ? 'selected' : ''; ?>></option>
-            <?php foreach( $related_posts as $related_post ) : ?>
-
-               <option value="<?php echo $related_post->ID; ?>" <?php echo $id==$related_post->ID ? 'selected="true"' : ''; ?>>
+               <option value="<?php echo $related_post->ID; ?>" <?php echo $value==$related_post->ID ? 'selected="true"' : ''; ?>>
                   <?php echo $related_post->post_title; ?>
                </option>
 
@@ -177,15 +146,26 @@ class MetaboxFieldCreator {
 
          </select>
 
-         <button class="delete_this w-20 <?php echo $hidden ? ' hidden':''; ?>">remove</button>
+         <button class="delete_this w-20">remove</button>
+         <?php
 
-      </div>
+      }
 
 
-      <br>
-
-      <?php
    }
+
+   $html = ob_get_contents();
+   ob_end_clean();
+
+   return $html;
+
+
+}
+
+
+
+
+
 
 
 };
