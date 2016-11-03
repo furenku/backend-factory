@@ -113,17 +113,17 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
             } elseif( $field_type == "related_post" ) {
 
                $related_post_ids = $field_value;
-
                if( is_array($field_value) ) {
 
                   foreach( $related_post_ids as $related_post_id ) {
+
 
                      $related_post_type = $field['related_post_types'];
                      $related_post_type = $related_post_type[0];
 
                      $field_name = $metabox['post_type'] . '-' .  $related_post_type;
-                     $field_value = $_POST[ '$field_name' ];
-
+                     $field_value = $_POST[ $field_name ];
+                  
                      // checar si hay arreglo de referencias a posts 1 en post 2 recien asignado
                      $posts = get_post_meta(
                      $related_post_id,
@@ -189,7 +189,7 @@ endforeach;
 
 endif;
 
-//$_SESSION['backend-factory-errors'] = $errors;
+$_SESSION['backend-factory-errors'] = $errors;
 
 
 // $_SESSION['backend-factory-errors'] = "should save";
@@ -252,6 +252,7 @@ public function standard_metabox_html( $post,  $callback_args ) {
                <div class="<?php echo $container_classes; ?>">
                   <?php
                   $value = get_post_meta( $post->ID, $field['field_name'], true);
+
                   $valueArray = array();
 
                   if( ! $value ) {

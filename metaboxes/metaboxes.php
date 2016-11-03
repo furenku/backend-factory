@@ -33,15 +33,15 @@ $metaboxes = array(
 
    'related-metabox'=>array(
 
-      'post_type'    => 'related-post-type',
-      'name'         => 'related-post-type-metabox',
+      'post_type'    => 'rpt',
+      'name'         => 'rpt-metabox',
       'title'        => 'Related Post Type',
 
       'description'  => 'Related Post Types',
 
       'fields' => array(
          array(
-            'field_name'            => 'related-post-type-test-cpt',
+            'field_name'            => 'rpt-test-cpt',
 
             'field_type'            => 'related_post',
             'repeatable'            => true,
