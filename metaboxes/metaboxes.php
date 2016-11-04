@@ -18,6 +18,19 @@ foreach ($field_types as $field_type ) {
 
 }
 
+
+$test_fields[] = array(
+   'field_name'            => 'test-cpt-rpt',
+
+   'field_type'            => 'related_post',
+   'repeatable'            => true,
+   'related_post_types'    => array('rpt'),
+
+   'field_label'           => 'Related Post Type Posts',
+   'description'           => '',
+   'markup_function'       => 'standard_metabox_markup'
+   );
+
 $metaboxes = array(
 
    'test-metabox'=>array(
