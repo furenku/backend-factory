@@ -11,7 +11,7 @@ foreach ($field_types as $field_type ) {
    $test_fields[] = array(
       'field_name'            => 'test-metabox-'. $field_type .'-field',
       'field_type'            => ''. $field_type .'',
-      'repeatable'            => true,
+      'repeatable'            => $field_type != "date" ?  true : false,
       'field_label'           => ucfirst( $field_type ) . ' Field',
       'description'           => 'A ' .$field_type .' field.',
    );
