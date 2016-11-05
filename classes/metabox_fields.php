@@ -106,6 +106,7 @@ class MetaboxFieldCreator {
 
 
    function textarea( $field, $value ) {
+      ob_start();
       ?>
       <div class="textarea-container">
          <textarea
@@ -127,6 +128,7 @@ class MetaboxFieldCreator {
    }
 
    function date( $field, $value ) {
+      ob_start();
       ?>
 
       <input type="datetime"
@@ -154,6 +156,7 @@ class MetaboxFieldCreator {
    }
 
    function datetime( $field, $value ) {
+      ob_start();
       ?>
       <input
       type="datetime"
@@ -183,6 +186,7 @@ class MetaboxFieldCreator {
       wp_enqueue_media();
       $upload_input_id = "upload_input-" . $field['field_name'];
       $upload_button_id = "upload_button-" . $field['field_name'];
+      ob_start();
       ?>
       <input
       type="url"
