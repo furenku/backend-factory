@@ -122,10 +122,10 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
                      $related_post_type = $related_post_type[0];
 
                      $field_name = $metabox['post_type'] . '-' .  $related_post_type;
-                     $field_value = $_POST[ '$field_name' ];
-                     ob_start();
-                     var_dump($someVar);
-                     $result = ob_get_clean();
+                     $field_value = $_POST[ $field['field_name'] ];
+                     // ob_start();
+                     // var_dump($someVar);
+                     // $result = ob_get_clean();
 
                      // checar si hay arreglo de referencias a posts 1 en post 2 recien asignado
                      $posts = get_post_meta(
