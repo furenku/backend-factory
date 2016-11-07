@@ -121,69 +121,68 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
                      $related_post_type = $field['related_post_types'];
                      $related_post_type = $related_post_type[0];
 
-                     $field_name = $metabox['post_type'] . '-' .  $related_post_type;
+                     $field_name =  $metabox['post_type'] . '-' . $related_post_type;
+
                      $field_value = $_POST[ $field['field_name'] ];
-                     // ob_start();
-                     // var_dump($someVar);
-                     // $result = ob_get_clean();
 
                      // checar si hay arreglo de referencias a posts 1 en post 2 recien asignado
                      $posts = get_post_meta(
                      $related_post_id,
-                     $field_name,
+                     $related_post_type . '-' . $metabox['post_type'],
                      true
                   );
-
-                  if( is_array($posts) ) {
-                     if( ! in_array($post_id,$post_id))
-                     array_push($posts, $post_id);
-                  } else {
-                     // si no, crear arreglo
-                     $posts = array( $post_id );
-                  }
-
-
-                  update_post_meta(
-                  $related_post_id,
-                  $field_name,
-                  array_unique($posts)
                );
 
-            }
+               if( is_array($posts) ) {
+                  if( ! in_array($post_id,$post_id))
+                  array_push($posts, $post_id);
+               } else {
+                  // si no, crear arreglo
+                  $posts = array( $post_id );
+               }
+
+
+               update_post_meta(
+               $related_post_id,
+               $field_name,
+               array_unique($posts)
+            );
+
          }
-
-      } elseif( $field_type == "date" ) {
-
-         // $field_value = date('Y-m-d h:i:s', strtotime( $field_value ) );
-         $field_value = date('Y-m-d', strtotime( $field_value ) );
-
-      }
-      elseif( $field_type == "html" ) {
-
-         // $field_value = date('Y-m-d h:i:s', strtotime( $field_value ) );
-         // $field_value = htmlentities2($field_value);
-
       }
 
-      // $error = false;
-      //
-      // // Do stuff.
-      // $woops=1;
-      // if ($woops) {
-      //    $error = new WP_Error($code, $msg);
-      // }
-      //
-      // if ($error) {
-      //    $_SESSION['backend-factory-errors'] = $error->get_error_message();
-      // }
+   } elseif( $field_type == "date" ) {
+
+      // $field_value = date('Y-m-d h:i:s', strtotime( $field_value ) );
+      $field_value = date('Y-m-d', strtotime( $field_value ) );
+
+   }
+   elseif( $field_type == "html" ) {
+
+      // $field_value = date('Y-m-d h:i:s', strtotime( $field_value ) );
+      // $field_value = htmlentities2($field_value);
+
+   }
+
+   // $error = false;
+   //
+   // // Do stuff.
+   // $woops=1;
+   // if ($woops) {
+   //    $error = new WP_Error($code, $msg);
+   // }
+   //
+   // if ($error) {
+   //    $_SESSION['backend-factory-errors'] = $error->get_error_message();
+   // }
 
 
 
-      update_post_meta(
-      $post_id,
-      $field_name,
-      $field_value
-   );
+   update_post_meta(
+   $post_id,
+   $field_name,
+   $field_value
+);
 
 
 }
