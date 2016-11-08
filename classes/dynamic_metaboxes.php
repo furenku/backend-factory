@@ -144,7 +144,7 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
 
                update_post_meta(
                $related_post_id,
-               $field_name,
+               $related_post_type . '-' . $metabox['post_type'],
                array_unique($posts)
             );
 
