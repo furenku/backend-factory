@@ -121,8 +121,11 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
                      $related_post_type = $field['related_post_types'];
                      $related_post_type = $related_post_type[0];
 
-                     $field_name = $related_post_type . '-' . $metabox['post_type'];
-                     $field_value = $_POST[ $field_name ];
+                     $field_name = $metabox['post_type'] . '-' .  $related_post_type;
+                     $field_value = $_POST[ '$field_name' ];
+                     ob_start();
+                     var_dump($someVar);
+                     $result = ob_get_clean();
 
                      // checar si hay arreglo de referencias a posts 1 en post 2 recien asignado
                      $posts = get_post_meta(
@@ -158,7 +161,7 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
       elseif( $field_type == "html" ) {
 
          // $field_value = date('Y-m-d h:i:s', strtotime( $field_value ) );
-         $field_value = htmlentities2($field_value);
+         // $field_value = htmlentities2($field_value);
 
       }
 
@@ -171,7 +174,7 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
       // }
       //
       // if ($error) {
-         // $_SESSION['backend-factory-errors'] = "test";
+      //    $_SESSION['backend-factory-errors'] = $error->get_error_message();
       // }
 
 
