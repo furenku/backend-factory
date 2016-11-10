@@ -28,7 +28,7 @@ class DynamicMetaboxes {
          $metabox['title'],
          array($this,"standard_metabox_html"),
          $metabox['post_type'],
-         "side",
+         "normal",
          "default",
          array('metabox'=>$metabox)
       );
