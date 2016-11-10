@@ -31,11 +31,19 @@ padding-bottom: $spacing * 3;
    height: auto !important;
    padding: $spacing;
 
+
    .input-container {
       height: auto;
       padding: $spacing /2;
       background-color: #fbfcfd;
       margin-bottom: $spacing/2;
+
+      max-width: 30em;
+
+      input,textarea {
+         padding: $spacing / 2;
+         width: 100%;
+      }
    }
 
 }

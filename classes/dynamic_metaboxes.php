@@ -29,7 +29,7 @@ class DynamicMetaboxes {
          array($this,"standard_metabox_html"),
          $metabox['post_type'],
          "normal",
-         "default",
+         "high",
          array('metabox'=>$metabox)
       );
    endforeach;
