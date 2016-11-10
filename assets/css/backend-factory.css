@@ -27,7 +27,11 @@
     height: auto;
     padding: 7.5px;
     background-color: #fbfcfd;
-    margin-bottom: 7.5px; }
+    margin-bottom: 7.5px;
+    max-width: 30em; }
+    .field-inputs .input-container input, .field-inputs .input-container textarea {
+      padding: 7.5px;
+      width: 100%; }
 
 .field-input-container {
   padding: 7.5px 0; }
