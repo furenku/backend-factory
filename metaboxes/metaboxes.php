@@ -5,18 +5,18 @@ global $metaboxes;
 
 $test_fields = array();
 $field_types = array( "text", "url", "email", "integer", "float", "date", "time", "textarea", "html", "upload" );
-
-foreach ($field_types as $field_type ) {
-
-   $test_fields[] = array(
-      'field_name'            => 'test-metabox-'. $field_type .'-field',
-      'field_type'            => ''. $field_type .'',
-      'repeatable'            => $field_type != "date" ?  true : false,
-      'field_label'           => ucfirst( $field_type ) . ' Field',
-      'description'           => 'A ' .$field_type .' field.',
-   );
-
-}
+//
+// foreach ($field_types as $field_type ) {
+//
+//    $test_fields[] = array(
+//       'field_name'            => 'test-metabox-'. $field_type .'-field',
+//       'field_type'            => ''. $field_type .'',
+//       'repeatable'            => $field_type != "date" ?  true : false,
+//       'field_label'           => ucfirst( $field_type ) . ' Field',
+//       'description'           => 'A ' .$field_type .' field.',
+//    );
+//
+// }
 
 
 $test_fields[] = array(

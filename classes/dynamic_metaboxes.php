@@ -113,7 +113,42 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
             } elseif( $field_type == "related_post" ) {
 
                $related_post_ids = $field_value;
-               if( is_array($field_value) ) {
+
+               $related_post_type = $field['related_post_types'];
+               $related_post_type = $related_post_type[0];
+
+               // check previous value to see if any posts were deleted
+
+               $old_related_posts = get_post_meta( $post_id, $field['field_name'], true );
+               $exclude_this_post_in_posts = array();
+
+               $related_post_field_name = $related_post_type . '-' . $metabox['post_type'];
+
+               foreach ($old_related_posts as $old_related_post ) {
+
+                  if( $old_related_post && $old_related_post != "" && ! in_array( $old_related_post, $related_post_ids ) ) {
+
+                     $related_post_posts = get_post_meta( $old_related_post, $related_post_field_name, true );
+
+                     if(is_array( $related_post_posts )) {
+
+                        if (($key = array_search( $post_id, $related_post_posts )) !== false) {
+                           unset($related_post_posts[$key]);
+                        }
+
+                        update_post_meta(
+                        $old_related_post,
+                        $related_post_type . '-' . $metabox['post_type'],
+                        array_unique($related_post_posts) );
+
+                     }
+
+                  }
+
+
+               }
+
+               if( is_array($related_post_ids) ) {
 
                   foreach( $related_post_ids as $related_post_id ) {
 
@@ -125,69 +160,67 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
 
                      $field_value = $_POST[ $field['field_name'] ];
 
-                     // checar si hay arreglo de referencias a posts 1 en post 2 recien asignado
+                     // check if related post has array of related posts
                      $posts = get_post_meta(
                      $related_post_id,
                      $related_post_type . '-' . $metabox['post_type'],
-                     true
-                  );
-               );
+                     true );
 
-               if( is_array($posts) ) {
-                  if( ! in_array($post_id,$post_id))
-                  array_push($posts, $post_id);
-               } else {
-                  // si no, crear arreglo
-                  $posts = array( $post_id );
+                     if( is_array($posts) ) {
+                        // if post has array, add this post to it (if its not already there)
+                        if( ! in_array($post_id,$post_id))
+                        array_push($posts, $post_id);
+                     } else {
+                        // otherwise create array in it, and associate this post
+                        $posts = array( $post_id );
+                     }
+
+
+                     update_post_meta(
+                     $related_post_id,
+                     $related_post_type . '-' . $metabox['post_type'],
+                     array_unique($posts) );
+
+                  }
                }
 
+            } elseif( $field_type == "date" ) {
 
-               update_post_meta(
-               $related_post_id,
-               $related_post_type . '-' . $metabox['post_type'],
-               array_unique($posts)
-            );
+               // $field_value = date('Y-m-d h:i:s', strtotime( $field_value ) );
+               $field_value = date('Y-m-d', strtotime( $field_value ) );
 
-         }
+            }
+            elseif( $field_type == "html" ) {
+
+               // $field_value = date('Y-m-d h:i:s', strtotime( $field_value ) );
+               // $field_value = htmlentities2($field_value);
+
+            }
+
+            // $error = false;
+            //
+            // // Do stuff.
+            // $woops=1;
+            // if ($woops) {
+            //    $error = new WP_Error($code, $msg);
+            // }
+            //
+            // if ($error) {
+            //    $_SESSION['backend-factory-errors'] = $error->get_error_message();
+            // }
+
+
+
+            update_post_meta(
+            $post_id,
+            $field_name,
+            $field_value
+         );
+
+
       }
 
-   } elseif( $field_type == "date" ) {
-
-      // $field_value = date('Y-m-d h:i:s', strtotime( $field_value ) );
-      $field_value = date('Y-m-d', strtotime( $field_value ) );
-
-   }
-   elseif( $field_type == "html" ) {
-
-      // $field_value = date('Y-m-d h:i:s', strtotime( $field_value ) );
-      // $field_value = htmlentities2($field_value);
-
-   }
-
-   // $error = false;
-   //
-   // // Do stuff.
-   // $woops=1;
-   // if ($woops) {
-   //    $error = new WP_Error($code, $msg);
-   // }
-   //
-   // if ($error) {
-   //    $_SESSION['backend-factory-errors'] = $error->get_error_message();
-   // }
-
-
-
-   update_post_meta(
-   $post_id,
-   $field_name,
-   $field_value
-);
-
-
-}
-
-endforeach;
+   endforeach;
 
 endif;
 
