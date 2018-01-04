@@ -316,130 +316,118 @@ public function standard_metabox_html( $post,  $callback_args ) {
            $fieldName = $field['field_name'];
 
            if( ! array_key_exists( $currentTranslation, $field['translations'] ) ) :
-             if( isset($field['description'] ) && $field['description'] != '' ) :
-               $fieldDescription = $field['description'];
-             else:
-               $fieldDescription = NULL;
-             endif;
+
 
            endif;
 
             ?>
 
               <div class="field-container">
+
                <?php
 
                $container_classes = "field-inputs ";
                $container_classes .= 'field-' . $field['field_type'];
                $container_classes .= $field['repeatable'] ? " field-repeatable-inputs" : "";
 
-               if( $field['repeatable'] ) :
-                  ?>
-
-                  <div class="repeatable-model hidden">
-                     <div class="input-container">
-                        <?php
-                        $value = NULL;
-                        echo $this->field_creator->create_field( $field, $value );
-                        ?>
-                     </div>
-                  </div>
-
-               <?php endif; ?>
-
-                 <?php if ($field['translations'] ) :
-
-                   foreach ($field['translations'] as $key => $translation) : ?>
-
-                   <h4 class="label-translated" lang="<?php echo $key; ?>">
-                      <?php echo $translation['field_label']; ?>
-                    </h4>
-                    <p class="description-translated" lang="<?php echo $key; ?>">
-                      <?php echo $translation['description']; ?>
-                    </p>
-                  <?php endforeach;
-
-               else:
-
-                 if( $fieldLabel ) :
-                   ?>
-                   <h4>
-                     <?php echo $fieldLabel; ?>
-                   </h4>
-                   <?php
-                 endif;
-
-                 if( $fieldDescription ) : ?>
-                   <p>
-                     <?php echo $fieldDescription; ?>
-                   </p>
-                 <?php endif;
-
-               endif;
                ?>
 
-
                <div class="<?php echo $container_classes; ?>">
+
                   <?php
 
                   if( is_array($field['translations']) ) :
 
+
                   foreach( $field['translations'] as $translationKey => $translation ) :
+
                     $fieldName = $field['field_name'] . "_" . $translationKey;
 
                     $value = get_post_meta( $post->ID, $fieldName, true);
 
                     $valueArray = array();
 
-                    if( ! $value ) {
-                       // If field is empty, show an empty form component:
-                       array_push( $valueArray, NULL );
+                    ?>
 
-                    } else {
-                       // if this field's value is an array:
-                       if( is_array($value) ) {
+                    <div class="field-translated" lang="<?php echo $translationKey; ?>">
 
-                          foreach( $value as $one_value ) {
-                             // don't display any null or empty values
-                             if( $one_value && $one_value != "" ) {
-                                array_push( $valueArray, $one_value );
-                             }
-                          }
+                      <h4 class="label-translated">
+                         <?php echo $translation['field_label']; ?>
+                       </h4>
 
-                          // add an empty one for repeatables
-                          array_push( $valueArray, NULL );
+                       <p class="description-translated">
+                         <?php echo $translation['description']; ?>
+                       </p>
 
-                       } else {
-
-                          // don't display any null or empty values
-                          if($value && $value != "") {
-                             array_push( $valueArray, $value );
-                          }
+                      <?php
 
 
-                       }
-                    }
+                      if( ! $value ) {
+                         // If field is empty, show an empty form component:
+                         array_push( $valueArray, NULL );
+
+                      } else {
+                         // if this field's value is an array:
+                         if( is_array($value) ) {
+
+                            foreach( $value as $one_value ) {
+                               // don't display any null or empty values
+                               if( $one_value && $one_value != "" ) {
+                                  array_push( $valueArray, $one_value );
+                               }
+                            }
+
+                            // add an empty one for repeatables
+                            array_push( $valueArray, NULL );
+
+                         } else {
+
+                            // don't display any null or empty values
+                            if($value && $value != "") {
+                               array_push( $valueArray, $value );
+                            }
 
 
-                    foreach ($valueArray as $field_value ) :
-                       ?>
-                       <div class="input-container">
-                          <?php
-                          echo $this->field_creator->create_field( $field, $field_value, $translationKey );
-                          ?>
-                       </div>
+                         }
+                      }
+
+                      if( $field['repeatable'] ) :
+                         ?>
+
+                         <div class="repeatable-model hidden" lang="<?php echo $translationKey; ?>">
+                            <div class="input-container">
+                               <?php
+                               $value = NULL;
+                               echo $this->field_creator->create_field( $field, $value, $translationKey );
+                               ?>
+                            </div>
+                         </div>
+
+                       <?php endif;
+
+                      foreach ($valueArray as $field_value ) :
+                         ?>
+                         <div class="input-container">
+                            <?php
+                            echo $this->field_creator->create_field( $field, $field_value, $translationKey );
+                            ?>
+                         </div>
 
 
-                    <?php endforeach; ?>
+                      <?php endforeach; ?>
+
+                    </div>
+                    <!-- .field-translated -->
+
+                  <?php endforeach; ?>
+
+                  <div class="input-container hidden">
+                    <?php
+                    echo $this->field_creator->create_field( $field, $field_value, NULL );
+                    ?>
+                  </div>
 
 
-                <?php endforeach; ?>
-
-                <div class="input-container hidden">
-                  <?php
-                  echo $this->field_creator->create_field( $field, $field_value, NULL );
-                  ?>
-                </div>
 
               <?php else:
 
@@ -477,6 +465,19 @@ public function standard_metabox_html( $post,  $callback_args ) {
                    }
                 }
 
+                if( $field['repeatable'] ) :
+                   ?>
+
+                   <div class="repeatable-model hidden">
+                      <div class="input-container">
+                         <?php
+                         $value = NULL;
+                         echo $this->field_creator->create_field( $field, $value );
+                         ?>
+                      </div>
+                   </div>
+
+                 <?php endif;
 
                 foreach ($valueArray as $field_value ) :
                    ?>
@@ -509,6 +510,7 @@ public function standard_metabox_html( $post,  $callback_args ) {
                }
 
                ?>
+
             </div>
             <?php
          endforeach;

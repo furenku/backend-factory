@@ -14,8 +14,24 @@ $(document).ready(function(){
 function setup_repeatables() {
 
    $('.add_repeatable').click(function(){
-      var model = $(this).parent().find('.repeatable-model .input-container').clone().detach();
-      $(this).parent().find('.field-repeatable-inputs').append( model );
+
+      if( $(this).parent().find('.field-translated').length > 0 ) {
+
+        var translation_container = $(this).parent()
+
+        var models = translation_container.find('.repeatable-model .input-container')
+
+        models.each(function(){
+          var model = $(this).clone().detach();
+          var target_container = $(this).parent().parent()
+          target_container.append( model );
+        })
+
+      } else {
+        var model = $(this).parent().find('.repeatable-model .input-container').clone().detach();
+        $(this).parent().find('.field-repeatable-inputs').append( model );
+      }
+
       setup_inputs();
       return false;
    })
@@ -125,12 +141,10 @@ function setup_metabox_language() {
      var lang = $(this).attr('lang')
      console.log(lang);
 
-     metabox.find('.input-translated').hide();
-     metabox.find('.label-translated').hide();
-     metabox.find('.description-translated').hide();
-     metabox.find('.input-translated[lang='+lang+']').show();
-     metabox.find('.label-translated[lang='+lang+']').show();
-     metabox.find('.description-translated[lang='+lang+']').show();
+     metabox.find('.field-translated').hide();
+     metabox.find('.field-translated[lang='+lang+']').show();
+
+     return false;
 
    })
 

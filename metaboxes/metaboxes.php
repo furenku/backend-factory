@@ -121,11 +121,37 @@ $metaboxes = array(
             )
          ),
          array(
+            'field_name'            => 'test-cpt-translated-repeatable',
+            'field_type'            => 'text',
+            'repeatable'            => true,
+            'field_label'           => 'Translated repeatable Field',
+            'description'           => 'A translated repeatable field.',
+            'markup_function'       => 'standard_metabox_html',
+            'translations'          => array(
+              'en' => array(
+                'field_label'           => 'Translated Field r',
+                'description'           => 'A translated field r.',
+              ),
+              'es' => array(
+                'field_label'           => 'Campo Traducido r',
+                'description'           => 'Un campo traducido r.',
+              )
+            )
+         ),
+         array(
             'field_name'            => 'test-cpt-not-translated',
             'field_type'            => 'text',
             'repeatable'            => false,
             'field_label'           => 'Field without Translation',
             'description'           => 'Field without Translation',
+            'markup_function'       => 'standard_metabox_html'
+         ),
+         array(
+            'field_name'            => 'test-cpt-not-translated-r',
+            'field_type'            => 'text',
+            'repeatable'            => true,
+            'field_label'           => 'Field without Translation r',
+            'description'           => 'Field without Translation r',
             'markup_function'       => 'standard_metabox_html'
          ),
 
