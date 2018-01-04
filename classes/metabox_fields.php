@@ -1,5 +1,6 @@
 <?php
 
+
 class MetaboxFieldCreator {
 
    var $field_type_functions;
@@ -14,7 +15,7 @@ class MetaboxFieldCreator {
 
    }
 
-   public function create_field( $field, $value ) {
+   public function create_field( $field, $value, $translationKey=NULL ) {
 
 
       $html = "";
@@ -29,32 +30,32 @@ class MetaboxFieldCreator {
          case 'integer':
          case 'float':
          case 'datetime':
-         $html .= $this->form_input( $field, $value );
+         $html .= $this->form_input( $field, $value, $translationKey );
          break;
 
          case 'html':
          case 'textarea':
-         $html .= $this->textarea( $field, $value );
+         $html .= $this->textarea( $field, $value, $translationKey );
          break;
 
          case 'date':
-         $html .= $this->date( $field, $value );
+         $html .= $this->date( $field, $value, $translationKey );
          break;
 
          case 'datetime':
          case 'time':
-         $html .= $this->datetime( $field, $value );
+         $html .= $this->datetime( $field, $value, $translationKey );
          break;
 
 
          case 'related_post' :
 
-         $html .= $this->related_post( $field, $value );
+         $html .= $this->related_post( $field, $value, $translationKey );
          break;
 
 
          case 'upload' :
-         $html .= $this->upload_field( $field, $value );
+         $html .= $this->upload_field( $field, $value, $translationKey );
          break;
       }
 
@@ -76,19 +77,32 @@ class MetaboxFieldCreator {
 
 
 
-   function form_input( $field, $value ) {
-
-
+   function form_input( $field, $value, $translationKey = NULL ) {
       ob_start();
+      $field_name = $field['field_name'];
+      if( $translationKey ) :
+        $field_name .= "_" . $translationKey;
+      endif;
+
+
       ?>
+
       <input
       type="<?php echo $field['field_type']; ?>"
-      name="<?php echo $field['repeatable'] ? $field['field_name'] . '[]' : $field['field_name']; ?>"
+      name="<?php echo $field['repeatable'] ? $field_name . '[]' : $field_name; ?>"
       value="<?php echo $value; ?>"
+      name="<?php echo $field_name; ?>"
+      <?php
+      if( $translationKey ) : ?>
+        lang="<?php echo $translationKey; ?>"
+        class="input-translated"
+      <?php endif; ?>
+
       <?php echo $field['field_type'] == "float" ? 'step="0.000000000001"': ''; ?>
       <?php echo $field['field_type'] == "float" ? 'step="0.000000000001"': ''; ?>
       <?php echo $field['repeatable'] ? 'class="repeatable-input w-80"' : ''; ?>
       >
+
 
       <?php
 

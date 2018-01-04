@@ -4,6 +4,7 @@ $(document).ready(function(){
 
    setup_inputs();
    setup_repeatables();
+   setup_metabox_language();
 
    console.log("Backend Factory: ready");
 
@@ -73,6 +74,7 @@ function setup_inputs() {
    setup_uploader();
 }
 
+
 function setup_datepicker() {
 
    var datepicker = $('input.datepicker');
@@ -109,4 +111,27 @@ function setup_uploader() {
          button.parent().find('.upload_input').val(file_url);
       });
    });
+}
+
+
+
+
+
+function setup_metabox_language() {
+
+   $('.metabox-language-selector li a').click(function(){
+     var metabox = $(this).parent().parent().parent().parent()
+     // console.log(metabox);
+     var lang = $(this).attr('lang')
+     console.log(lang);
+
+     metabox.find('.input-translated').hide();
+     metabox.find('.label-translated').hide();
+     metabox.find('.description-translated').hide();
+     metabox.find('.input-translated[lang='+lang+']').show();
+     metabox.find('.label-translated[lang='+lang+']').show();
+     metabox.find('.description-translated[lang='+lang+']').show();
+
+   })
+
 }

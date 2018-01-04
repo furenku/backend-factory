@@ -91,6 +91,48 @@ $metaboxes = array(
    ),
 
 
+   'translated-cpt-test-text'=>array(
+
+      'post_type'    => 'translated-cpt',
+      'name'         => 'translated-cpt-metabox',
+      'title'        => 'Translated CPT Metabox',
+
+      'description'  => 'Fill in Translated',
+      'translations'          => array('es','en'),
+
+      'fields' => array(
+
+         array(
+            'field_name'            => 'test-cpt-translated',
+            'field_type'            => 'text',
+            'repeatable'            => false,
+            'field_label'           => 'Translated Field',
+            'description'           => 'A translated field.',
+            'markup_function'       => 'standard_metabox_html',
+            'translations'          => array(
+              'en' => array(
+                'field_label'           => 'Translated Field',
+                'description'           => 'A translated field.',
+              ),
+              'es' => array(
+                'field_label'           => 'Campo Traducido',
+                'description'           => 'Un campo traducido.',
+              )
+            )
+         ),
+         array(
+            'field_name'            => 'test-cpt-not-translated',
+            'field_type'            => 'text',
+            'repeatable'            => false,
+            'field_label'           => 'Field without Translation',
+            'description'           => 'Field without Translation',
+            'markup_function'       => 'standard_metabox_html'
+         ),
+
+      )
+   ),
+
+
    'repeatable-field-cpt' => array(
 
       'post_type'    => 'repeatable-field-cpt',

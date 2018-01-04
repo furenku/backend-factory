@@ -5,6 +5,13 @@ global $cpts;
 $cpts = array(
 
    array(
+      'post_type' => 'translated-cpt',
+      'hierarchical' => 'false',
+      'singular' => "Translated CPT",
+      'plural' => "Translated CPTs"
+   ),
+
+   array(
       'post_type' => 'test-cpt',
       'hierarchical' => 'false',
       'singular' => "Test CPT",

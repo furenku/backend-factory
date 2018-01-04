@@ -4,10 +4,30 @@
 class BackendFactory {
 
    var $cpts;
+   var $translations = array();
+
+   var $defaultTranslation = "en";
+   var $currentTranslation = "en";
+
+
 
    function __construct() {
       $this->cpts = array();
       $this->load_assets();
+      $this->query_vars();
+      global $BackendFactory;
+
+      $BackendFactory = $this;
+
+   }
+
+
+   function query_vars(){
+     function add_custom_query_var( $vars ){
+       $vars[] = "backend_lang";
+       return $vars;
+     }
+     add_filter( 'query_vars', 'add_custom_query_var' );
    }
 
 
@@ -20,7 +40,19 @@ class BackendFactory {
       wp_enqueue_script( "jquery-ui-datepicker", plugin_dir_url( __FILE__ ) . "../bower_components/jqueryui-datepicker/datepicker.js", array('jquery') );
 
       wp_enqueue_script( "backend-factory", plugin_dir_url( __FILE__ ) . "../assets/js/backend-factory.js", array('jquery-ui-datepicker') );
-   }
+
+  }
+
+  // translation
+  function add_translation( $key=NULL, $translation = NULL ) {
+
+    if( is_array( $translation ) ) {
+
+      $this->translations[$key] = $translation;
+
+    }
+
+  }
 
 
    // CPTs (Custom Post Types):

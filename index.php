@@ -14,6 +14,8 @@ include_once 'classes/dynamic_metaboxes.php';
 
 include_once 'cpt/cpt.php';
 include_once 'metaboxes/metaboxes.php';
+include_once 'translations/translations.php';
+
 
 
 // If this file is called directly, abort.
@@ -25,11 +27,11 @@ add_action( 'init', 'backend_factory_init' );
 
 function backend_factory_init() {
 
-   global $cpts, $metaboxes;
+   global $cpts, $metaboxes, $translations;
 
    $backendFactory = new BackendFactory();
 
-   $dynamic_metaboxes = new DynamicMetaboxes();
+   $dynamic_metaboxes = new DynamicMetaboxes( $backendFactory );
 
 
    foreach( $cpts as $cpt ) {
@@ -39,6 +41,10 @@ function backend_factory_init() {
    foreach( $metaboxes as $metabox ) {
       $dynamic_metaboxes -> add_metabox( $metabox );
    }
+   foreach( $translations as $translationKey => $translationArray ) {
+     $backendFactory -> add_translation( $translationKey, $translationArray );
+   }
+
 
    $backendFactory -> register_cpts();
 
@@ -74,5 +80,8 @@ function wp_errors() {
        unset( $_SESSION['backend-factory-errors'] );
    }
 }
+
+
+
 
 ?>

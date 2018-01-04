@@ -1,24 +1,33 @@
 <?php
 
+include_once 'template-standard_metabox.php';
+
 class DynamicMetaboxes {
 
    var $metaboxes;
    var $field_creator;
 
-   public function __construct() {
+   var $backendFactory;
+
+   public function __construct( $backendFactory_ ) {
+
+      $this->backendFactory = $backendFactory_;
+
       $this->metaboxes = array();
+
       add_action("add_meta_boxes", array( $this, 'register_metaboxes' ) );
       add_action("save_post", array( $this, 'save_metaboxes' ) );
 
       $this->field_creator = new MetaboxFieldCreator();
 
-      // echo "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laborum praesentium odit sunt adipisci sequi, eaque tenetur quae libero!";
+
    }
    public function add_metabox( $metabox = NULL ) {
       if( $metabox ) {
          array_push( $this -> metaboxes, $metabox );
       }
    }
+
 
    public function register_metaboxes()
    {
@@ -30,7 +39,7 @@ class DynamicMetaboxes {
          $metabox['post_type'],
          "normal",
          "high",
-         array('metabox'=>$metabox)
+         array('metabox'=>$metabox )
       );
    endforeach;
 
@@ -40,6 +49,9 @@ class DynamicMetaboxes {
 
 public function save_metaboxes($post_id=0, $post=0, $update=0)
 {
+
+    $currentTranslation = $this->backendFactory->currentTranslation;
+
 
    // ob_start();
    // var_dump($_POST);
@@ -67,12 +79,20 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
 
          foreach($metabox['fields'] as $field) :
 
-            if(isset($_POST[ $field['field_name'] ]))
+           $field_name = $field['field_name'];
+
+
+            if(isset($_POST[ $field_name ]))
             {
+                $field_translated_values = array();
 
-               $field_value = $_POST[ $field['field_name'] ];
+                if( is_array($field['translations']) ) :
+                  foreach( $field['translations'] as $translationKey => $translation ) :
+                    $field_translated_values[$translationKey] = $_POST[ $field_name . "_" . $translationKey ];
+                  endforeach;
+                endif;
 
-               $field_name = $field['field_name'];
+               $field_value = $_POST[ $field_name ];
 
                $field_type = $field['field_type'];
 
@@ -119,7 +139,7 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
 
                // check previous value to see if any posts were deleted
 
-               $old_related_posts = get_post_meta( $post_id, $field['field_name'], true );
+               $old_related_posts = get_post_meta( $post_id, $field_name, true );
                $exclude_this_post_in_posts = array();
 
                $related_post_field_name = $related_post_type . '-' . $metabox['post_type'];
@@ -158,7 +178,7 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
 
                      $field_name =  $metabox['post_type'] . '-' . $related_post_type;
 
-                     $field_value = $_POST[ $field['field_name'] ];
+                     $field_value = $_POST[ $field_name ];
 
                      // check if related post has array of related posts
                      $posts = get_post_meta(
@@ -211,11 +231,25 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
 
 
 
-            update_post_meta(
-            $post_id,
-            $field_name,
-            $field_value
-         );
+            if( is_array($field['translations']) ) :
+
+              foreach( $field['translations'] as $translationKey => $translation ) :
+                update_post_meta(
+                  $post_id,
+                  $field_name . "_" . $translationKey,
+                  $field_translated_values[$translationKey]
+               );
+              endforeach;
+
+            else:
+
+                update_post_meta(
+                  $post_id,
+                  $field_name,
+                  $field_value
+                );
+
+            endif;
 
 
       }
@@ -237,15 +271,33 @@ $_SESSION['backend-factory-errors'] = $errors;
 
 
 
+
+
 public function standard_metabox_html( $post,  $callback_args ) {
+
    $args = $callback_args['args'];
    $metabox = $args['metabox'];
 
    wp_nonce_field(basename(__FILE__), $metabox['name']."-metabox-nonce" );
 
-
    ?>
+
+
    <div class="metabox">
+
+      <nav class="metabox-language-selector">
+          <ul>
+            <?php foreach ($metabox['translations'] as $key) : ?>
+
+              <li>
+                <a href="#" lang="<?php echo $key; ?>">
+                  <?php echo $this->backendFactory->translations[$key]['label']; ?>
+                </a>
+              </li>
+
+            <?php endforeach; ?>
+          </ul>
+      </nav>
 
       <p>
          <?php echo $metabox['description']; ?>
@@ -258,8 +310,23 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
 
          foreach($metabox['fields'] as $field ) :
+
+           $fieldLabel = $field['field_label'];
+
+           $fieldName = $field['field_name'];
+
+           if( ! array_key_exists( $currentTranslation, $field['translations'] ) ) :
+             if( isset($field['description'] ) && $field['description'] != '' ) :
+               $fieldDescription = $field['description'];
+             else:
+               $fieldDescription = NULL;
+             endif;
+
+           endif;
+
             ?>
-            <div class="field-container">
+
+              <div class="field-container">
                <?php
 
                $container_classes = "field-inputs ";
@@ -280,56 +347,151 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
                <?php endif; ?>
 
-               <h4>
-                  <?php echo $field['field_label']; ?>
-               </h4>
+                 <?php if ($field['translations'] ) :
+
+                   foreach ($field['translations'] as $key => $translation) : ?>
+
+                   <h4 class="label-translated" lang="<?php echo $key; ?>">
+                      <?php echo $translation['field_label']; ?>
+                    </h4>
+                    <p class="description-translated" lang="<?php echo $key; ?>">
+                      <?php echo $translation['description']; ?>
+                    </p>
+                  <?php endforeach;
+
+               else:
+
+                 if( $fieldLabel ) :
+                   ?>
+                   <h4>
+                     <?php echo $fieldLabel; ?>
+                   </h4>
+                   <?php
+                 endif;
+
+                 if( $fieldDescription ) : ?>
+                   <p>
+                     <?php echo $fieldDescription; ?>
+                   </p>
+                 <?php endif;
+
+               endif;
+               ?>
+
 
                <div class="<?php echo $container_classes; ?>">
                   <?php
-                  $value = get_post_meta( $post->ID, $field['field_name'], true);
 
-                  $valueArray = array();
+                  if( is_array($field['translations']) ) :
 
-                  if( ! $value ) {
-                     // If field is empty, show an empty form component:
-                     array_push( $valueArray, NULL );
+                  foreach( $field['translations'] as $translationKey => $translation ) :
+                    $fieldName = $field['field_name'] . "_" . $translationKey;
 
-                  } else {
-                     // if this field's value is an array:
-                     if( is_array($value) ) {
+                    $value = get_post_meta( $post->ID, $fieldName, true);
 
-                        foreach( $value as $one_value ) {
-                           // don't display any null or empty values
-                           if( $one_value && $one_value != "" ) {
-                              array_push( $valueArray, $one_value );
-                           }
-                        }
+                    $valueArray = array();
 
-                        // add an empty one for repeatables
-                        array_push( $valueArray, NULL );
+                    if( ! $value ) {
+                       // If field is empty, show an empty form component:
+                       array_push( $valueArray, NULL );
 
-                     } else {
+                    } else {
+                       // if this field's value is an array:
+                       if( is_array($value) ) {
 
-                        // don't display any null or empty values
-                        if($value && $value != "") {
-                           array_push( $valueArray, $value );
-                        }
+                          foreach( $value as $one_value ) {
+                             // don't display any null or empty values
+                             if( $one_value && $one_value != "" ) {
+                                array_push( $valueArray, $one_value );
+                             }
+                          }
 
+                          // add an empty one for repeatables
+                          array_push( $valueArray, NULL );
 
-                     }
-                  }
+                       } else {
 
-
-                  foreach ($valueArray as $field_value ) :
-                     ?>
-                     <div class="input-container">
-                        <?php
-                        echo $this->field_creator->create_field( $field, $field_value );
-                        ?>
-                     </div>
+                          // don't display any null or empty values
+                          if($value && $value != "") {
+                             array_push( $valueArray, $value );
+                          }
 
 
-                  <?php endforeach; ?>
+                       }
+                    }
+
+
+                    foreach ($valueArray as $field_value ) :
+                       ?>
+                       <div class="input-container">
+                          <?php
+                          echo $this->field_creator->create_field( $field, $field_value, $translationKey );
+                          ?>
+                       </div>
+
+
+                    <?php endforeach; ?>
+
+
+                <?php endforeach; ?>
+
+                <div class="input-container hidden">
+                  <?php
+                  echo $this->field_creator->create_field( $field, $field_value, NULL );
+                  ?>
+                </div>
+
+              <?php else:
+
+
+                $value = get_post_meta( $post->ID, $fieldName, true);
+
+                $valueArray = array();
+
+                if( ! $value ) {
+                   // If field is empty, show an empty form component:
+                   array_push( $valueArray, NULL );
+
+                } else {
+                   // if this field's value is an array:
+                   if( is_array($value) ) {
+
+                      foreach( $value as $one_value ) {
+                         // don't display any null or empty values
+                         if( $one_value && $one_value != "" ) {
+                            array_push( $valueArray, $one_value );
+                         }
+                      }
+
+                      // add an empty one for repeatables
+                      array_push( $valueArray, NULL );
+
+                   } else {
+
+                      // don't display any null or empty values
+                      if($value && $value != "") {
+                         array_push( $valueArray, $value );
+                      }
+
+
+                   }
+                }
+
+
+                foreach ($valueArray as $field_value ) :
+                   ?>
+                   <div class="input-container">
+                      <?php
+                      echo $this->field_creator->create_field( $field, $field_value );
+                      ?>
+                   </div>
+
+
+                <?php endforeach; ?>
+
+
+
+              <?php endif; ?>
 
 
                </div>
@@ -366,290 +528,6 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
 
 
-
-
-
-public function old_metabox_html( $post,  $callback_args ) {
-   $args = $callback_args['args'];
-   $metabox = $args['metabox'];
-
-   wp_nonce_field(basename(__FILE__), $metabox['name']."-metabox-nonce" );
-
-
-   ?>
-
-   <p>
-      <?php echo $metabox['description']; ?>
-   </p>
-   <div>
-      <?php
-
-
-      foreach($metabox['fields'] as $field ) :
-
-         $field_name = $field['field_name'];
-
-         echo '<div class="field-container field-'.$field['field_type'].'">';
-
-
-
-
-         $value = get_post_meta( $post->ID, $field['field_name'], true);
-
-
-         if( $field['field_type'] == "related_post" ) {
-
-            foreach ($field['related_post_types'] as $related_post_type ) {
-
-               $field_name = $metabox['post_type'];
-
-               $related_post_type_field_name =  $field_name . '-' . $related_post_type;
-
-               $posts = get_posts( array( 'post_type' => $related_post_type, 'numberposts' => -1 ) );
-
-               if( $field['repeatable'] ) {
-                  $related_post_type_field_name .= '[]';
-                  $field_creator -> related_post_selector( $related_post_type_field_name, $posts, 0, true, true );
-
-               }
-
-               $related_posts = get_post_meta(
-               $post->ID,
-               $related_post_type_field_name,
-               true );
-
-               ?>
-
-               <h4>
-                  <?php echo $field['field_label']; ?>
-               </h4>
-
-               <?php
-
-
-               if(is_array($related_posts)) {
-                  // if(count($related_posts)>0) {
-                  foreach( $related_posts as $related_post ) {
-                     if( $related_post != "0" ) {
-                        $field_creator -> related_post_selector( $related_post_type_field_name, $posts, $related_post, $field['repeatable'] );
-                     }
-                  }
-                  // } else {
-                  //    if( ! $field['repeatable'] )
-                  //       related_post_selector( $related_post_type_field_name, $posts, 0, $field['repeatable'] );
-                  // }
-               } else {
-                  if( ! $field['repeatable'] ) {
-
-                     $field_creator -> related_post_selector( $related_post_type_field_name, $posts, (int)$related_posts, $field['repeatable'] );
-                  }
-               }
-
-               if( $field['repeatable'] ) {
-                  $field_creator -> related_post_selector( $related_post_type_field_name, $posts, $field['repeatable']  );
-               }
-
-            }
-
-         }
-
-
-
-         if( $field['field_type'] == "textarea" ) {
-            ?>
-
-            <div class="columns">
-               <h4>
-                  <?php echo $field['field_label']; ?>
-               </h4>
-               <div class="columns p4">
-                  <?php if( $field['repeatable'] ) : ?>
-                     <div class="repeatable hidden">
-                        <textarea name="<?php echo $field['field_name']; ?>" class="repeatable hidden"><?php echo $value; ?></textarea>
-                     </div>
-                  <?php endif; ?>
-                  <textarea name="<?php echo $field['field_name']; ?>"><?php echo $value; ?></textarea>
-               </div>
-
-            </div>
-
-            <?php
-
-         }
-
-         if( $field['field_type'] == "date" ) {
-
-            ?>
-
-            <h4>
-               <?php echo $field['field_label']; ?>
-            </h4>
-
-            <div class="columns p4">
-               <?php if( $field['repeatable'] ) : ?>
-                  <div class="repeatable hidden">
-                     class="repeatable hidden"
-                     <input type="datetime" data-target="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="datepicker">
-                     <input type="datetime" id="<?php echo $field['field_name']; ?>" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="hidden">
-                  <?php endif; ?>
-                  <input type="datetime" data-target="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="datepicker">
-                  <input type="datetime" id="<?php echo $field['field_name']; ?>" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>" class="hidden">
-               </div>
-            </div>
-
-            <?php
-
-         }
-
-         if( $field['field_type'] == "time" ) {
-
-            ?>
-
-            <div class="columns">
-               <h4>
-                  <?php echo $field['field_label']; ?>
-               </h4>
-
-               <div class="columns p4"><input type="datetime" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>"></div>
-
-            </div>
-
-            <?php
-
-         }
-         if(
-         $field['field_type'] == "text"      ||
-         $field['field_type'] == "email"     ||
-         $field['field_type'] == "url"       ||
-         $field['field_type'] == "number"    ||
-         $field['field_type'] == "integer"   ||
-         $field['field_type'] == "float"
-         ) {
-            $field_type = $field['field_type'];
-
-            $input_field_type = $field_type;
-
-            switch( $field_type ) {
-               case "integer" :
-               case "float" :
-               $input_field_type = "number";
-               break;
-               default :
-               $input_field_type = $field_type;
-               break;
-
-            }
-            ?>
-
-            <div class="field columns">
-
-               <h4>
-                  <?php echo $field['field_label']; ?>
-               </h4>
-
-               <p>
-                  <?php echo $field['description']; ?>
-               </p>
-
-               <div class="field-inputs columns p4 <?php echo $field['repeatable'] ? 'field-repeatable-inputs' : ''; ?>">
-
-                  <?php
-                  if( $value ) {
-                     echo $field_creator -> form_input( $field, $value );
-                  }
-                  ?>
-
-               </div>
-
-               <?php if( $field['repeatable'] ) { ?>
-
-                  <button class="add_repeatable button">
-                     Add Another
-                  </button>
-
-                  <?php } ?>
-
-               </div>
-
-               <?php
-
-            }
-
-            if( $field['field_type'] == "html" ) {
-
-               ?>
-
-               <div class="columns">
-
-                  <h4>
-                     <?php echo $field['field_label']; ?>
-                  </h4>
-
-                  <div class="columns p4">
-                     <textarea name="<?php echo $field['field_name']; ?>">
-                        <?php echo $value; ?>
-                     </textarea>
-                  </div>
-
-               </div>
-
-               <?php
-
-            }
-
-            if( $field['field_type'] == "upload" ) {
-               // jQuery
-               wp_enqueue_script('jquery');
-               // This will enqueue the Media Uploader script
-               wp_enqueue_media();
-
-               $upload_input_id = "upload_input-" . $field['field_name'];
-               $upload_button_id = "upload_button-" . $field['field_name'];
-               ?>
-               <div class="columns">
-                  <h4>
-                     <?php echo $field['field_label']; ?>
-                  </h4>
-                  <div class="columns">
-                     <label for="<?php echo $upload_input_id; ?>">Select File</label>
-                     <input id="<?php echo $upload_input_id; ?>" type="url" name="<?php echo $field['field_name']; ?>" value="<?php echo $value; ?>">
-                     <input type="button" name="<?php echo $upload_button_id; ?>" id="<?php echo $upload_button_id; ?>" class="button-secondary" value="Upload File">
-                  </div>
-               </div>
-               <script type="text/javascript">
-               jQuery(document).ready(function($){
-                  $('#<?php echo $upload_button_id; ?>').click(function(e) {
-                     e.preventDefault();
-                     var file = wp.media({
-                        title: 'Upload Image',
-                        // mutiple: true if you want to upload multiple files at once
-                        multiple: false
-                     }).open()
-                     .on('select', function(e){
-
-                        var uploaded_file = file.state().get('selection').first();
-
-                        var file_url = uploaded_file.toJSON().url;
-
-                        $('#<?php echo $upload_input_id; ?>').val(file_url);
-                     });
-                  });
-               });
-               </script>
-
-               <?php
-            }
-
-
-
-            echo '</div>';
-
-         endforeach; ?>
-
-      </div>
-
-      <?php
-   }
 
 
 
