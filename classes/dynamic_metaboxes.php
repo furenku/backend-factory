@@ -32,8 +32,9 @@ class DynamicMetaboxes {
    public function register_metaboxes()
    {
 
-    
+
     foreach($this -> metaboxes as $metabox) :
+
       add_meta_box(
          $metabox['title']."-meta-box",
          $metabox['title'],
@@ -45,11 +46,7 @@ class DynamicMetaboxes {
        );
      endforeach;
 
-
-
-
-
-}
+   }
 
 public function save_metaboxes($post_id=0, $post=0, $update=0)
 {
@@ -372,17 +369,29 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
                       } else {
                          // if this field's value is an array:
+
                          if( is_array($value) ) {
 
-                            foreach( $value as $one_value ) {
-                               // don't display any null or empty values
-                               if( $one_value && $one_value != "" ) {
-                                  array_push( $valueArray, $one_value );
-                               }
+
+                           if( ! isAssoc($value) ) {
+                              foreach( $value as $one_value ) {
+                                 // don't display any null or empty values
+                                 if( $one_value && $one_value != "" ) {
+                                    array_push( $valueArray, $one_value );
+                                 }
+                              }
+
+                              // add an empty one for repeatables
+                              array_push( $valueArray, NULL );
+
+                          } else {
+
+                            array_push( $valueArray, value );
+                            if( $field['repeatable'] ) {
+                              array_push( $valueArray, NULL );
                             }
 
-                            // add an empty one for repeatables
-                            array_push( $valueArray, NULL );
+                          }
 
                          } else {
 
@@ -408,17 +417,19 @@ public function standard_metabox_html( $post,  $callback_args ) {
                          </div>
 
                        <?php endif;
-
+                       $i = 0;
                       foreach ($valueArray as $field_value ) :
                          ?>
                          <div class="input-container">
                             <?php
-                            echo $this->field_creator->create_field( $field, $field_value, $translationKey );
+                            // var_dump( $field_value );
+                            echo $this->field_creator->create_field( $field, $field_value, $translationKey, $i );
                             ?>
                          </div>
-
-
-                      <?php endforeach; ?>
+                      <?php
+                      $i++;
+                     endforeach;
+                     ?>
 
                     </div>
                     <!-- .field-translated -->
@@ -448,15 +459,26 @@ public function standard_metabox_html( $post,  $callback_args ) {
                    // if this field's value is an array:
                    if( is_array($value) ) {
 
-                      foreach( $value as $one_value ) {
-                         // don't display any null or empty values
-                         if( $one_value && $one_value != "" ) {
-                            array_push( $valueArray, $one_value );
-                         }
+                   // var_dump($value);
+
+                     if( ! isAssoc($value) ) {
+                        foreach( $value as $one_value ) {
+                           // don't display any null or empty values
+                           if( $one_value && $one_value != "" ) {
+                              array_push( $valueArray, $one_value );
+                           }
+                        }
+                        array_push( $valueArray, NULL );
+                      } else {
+
+                        array_push( $valueArray, $value );
+                        if( $field['repeatable'] ) {
+                          array_push( $valueArray, NULL );
+                        }
+
                       }
 
                       // add an empty one for repeatables
-                      array_push( $valueArray, NULL );
 
                    } else {
 
@@ -557,17 +579,13 @@ add_action( 'admin_enqueue_scripts', 'load_wp_media_files' );
 
 
 
+// util
 
-
-
-
-
-
-
-
-
-
-
+function isAssoc(array $arr)
+{
+    if (array() === $arr) return false;
+    return array_keys($arr) !== range(0, count($arr) - 1);
+}
 
 
 ?>

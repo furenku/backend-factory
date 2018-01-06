@@ -15,7 +15,7 @@ class MetaboxFieldCreator {
 
    }
 
-   public function create_field( $field, $value, $translationKey=NULL ) {
+   public function create_field( $field, $value, $translationKey=NULL, $i=-1 ) {
 
 
       $html = "";
@@ -52,6 +52,12 @@ class MetaboxFieldCreator {
 
          $html .= $this->related_post( $field, $value, $translationKey );
          break;
+
+
+        case 'field_group' :
+
+        $html .= $this->field_group( $field, $value, $translationKey, $i );
+        break;
 
 
          case 'upload' :
@@ -92,6 +98,7 @@ class MetaboxFieldCreator {
       name="<?php echo $field['repeatable'] ? $field_name . '[]' : $field_name; ?>"
       value="<?php echo $value; ?>"
       name="<?php echo $field_name; ?>"
+
       <?php
       if( $translationKey ) : ?>
         lang="<?php echo $translationKey; ?>"
@@ -140,6 +147,8 @@ class MetaboxFieldCreator {
       ob_end_clean();
       return $html;
    }
+
+
 
    function date( $field, $value ) {
       ob_start();
@@ -192,6 +201,83 @@ class MetaboxFieldCreator {
       return $html;
 
    }
+
+
+
+
+    function field_group( $field, $value, $translationKey, $i=-1 ) {
+
+       ob_start();
+
+       $fieldName = $field['field_name'];
+       if( $translationKey ) :
+         $fieldName .= "_" . $translationKey;
+       endif;
+
+       ?>
+
+       <fieldset class="field_inputs <?php echo $field['repeatable'] ? 'class="repeatable-input w-80"' : ''; ?>">
+         <?php
+
+         $keys = array_keys($field['field_group']);
+
+         foreach ( $keys as $key ) :
+
+           $eachField = $field['field_group'][$key];
+           $eachFieldLabel = $field['field_group'][$key]['field_label'];
+           if( $translationKey ) :
+             $eachFieldLabel = $eachField['translations'][$translationKey]['field_label'];
+           endif;
+
+           $name = $fieldName;
+           if( $i > -1 ) {
+             $name .= '['.$i.']';
+           }
+
+           $name .= '['.$key.']';
+
+           $eachFieldGroupValue = $value[$key];
+
+         ?>
+
+           <label for="">
+             <?php echo $eachFieldLabel; ?>
+           </label>
+
+
+           <input
+           type="text"
+           name="<?php echo $name; ?>"
+
+           <?php if( $translationKey ) : ?>
+             lang="<?php echo $translationKey; ?>"
+             class="input-translated"
+           <?php endif; ?>
+
+           value="<?php echo $eachFieldGroupValue; ?>"
+           >
+
+         <?php endforeach; ?>
+
+         <?php
+
+         // if( $field['repeatable'] ) {
+         ?>
+           <!-- <button class="delete_this w-20">remove</button> -->
+         <?php
+         // }
+
+         ?>
+
+       </fieldset>
+
+       <?php
+       $html = ob_get_contents();
+       ob_end_clean();
+       return $html;
+
+    }
+
 
 
    function upload_field( $field, $value ) {
