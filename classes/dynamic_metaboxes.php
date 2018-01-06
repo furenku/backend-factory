@@ -31,17 +31,21 @@ class DynamicMetaboxes {
 
    public function register_metaboxes()
    {
-      foreach($this -> metaboxes as $metabox) :
-         add_meta_box(
-         $metabox['post_type']."-meta-box",
+
+    
+    foreach($this -> metaboxes as $metabox) :
+      add_meta_box(
+         $metabox['title']."-meta-box",
          $metabox['title'],
          array($this,"standard_metabox_html"),
          $metabox['post_type'],
          "normal",
          "high",
-         array('metabox'=>$metabox )
-      );
-   endforeach;
+         array('metabox'=>$metabox)
+       );
+     endforeach;
+
+
 
 
 
