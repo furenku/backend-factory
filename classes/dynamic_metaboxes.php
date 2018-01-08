@@ -54,12 +54,6 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
     $currentTranslation = $this->backendFactory->currentTranslation;
 
 
-   // ob_start();
-   // var_dump($_POST);
-   // $vardump = ob_get_clean();
-   // ob_end_clean();
-   // $errors .= $vardump;
-   // $errors .= "<br>";
 
    if(!current_user_can("edit_post", $post_id))
    return $post_id;
@@ -231,6 +225,34 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
             // }
 
 
+            // clean array
+
+            if( $field['field_type'] == 'field_group' ) {
+              if( is_array($field_value) ) {
+
+                for( $i = 0; $i<count($field_value); $i++ ) {
+
+                  $eachFieldGroup = $field_value[$i];
+
+                  if( is_array( $eachFieldGroup ) ) {
+                    $field_value[$i] = array_filter(
+                      $eachFieldGroup,
+                      function($value) {
+                        return $value != '';
+                      }
+                    );
+                  }
+
+                }
+                $field_value = array_filter(
+                  $field_value,
+                  function($value) {
+                    return is_array($value) && count($value)>0;
+                  }
+                );
+
+              }
+            }
 
             if( is_array($field['translations']) ) :
 
@@ -370,7 +392,7 @@ public function standard_metabox_html( $post,  $callback_args ) {
                       } else {
                          // if this field's value is an array:
 
-                         if( is_array($value) ) {
+                         if( is_array( $value ) ) {
 
 
                            if( ! isAssoc($value) ) {
@@ -382,7 +404,9 @@ public function standard_metabox_html( $post,  $callback_args ) {
                               }
 
                               // add an empty one for repeatables
-                              array_push( $valueArray, NULL );
+                              if( $field['repeatable'] ) {
+                                array_push( $valueArray, NULL );
+                              }
 
                           } else {
 
@@ -417,7 +441,9 @@ public function standard_metabox_html( $post,  $callback_args ) {
                          </div>
 
                        <?php endif;
+
                        $i = 0;
+
                       foreach ($valueArray as $field_value ) :
                          ?>
                          <div class="input-container">
@@ -446,6 +472,17 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
               <?php else:
 
+                ?>
+
+                <h4 class="label">
+                   <?php echo $field['field_label']; ?>
+                 </h4>
+
+                 <p class="description">
+                   <?php echo $field['description']; ?>
+                 </p>
+
+                 <?php
 
                 $value = get_post_meta( $post->ID, $fieldName, true);
 
@@ -468,10 +505,15 @@ public function standard_metabox_html( $post,  $callback_args ) {
                               array_push( $valueArray, $one_value );
                            }
                         }
-                        array_push( $valueArray, NULL );
+
+                        if( $field['repeatable'] ) {
+                          array_push( $valueArray, NULL );
+                        }
+
                       } else {
 
                         array_push( $valueArray, $value );
+
                         if( $field['repeatable'] ) {
                           array_push( $valueArray, NULL );
                         }
@@ -504,17 +546,17 @@ public function standard_metabox_html( $post,  $callback_args ) {
                    </div>
 
                  <?php endif;
-
+                 $i = 0;
                 foreach ($valueArray as $field_value ) :
                    ?>
                    <div class="input-container">
                       <?php
-                      echo $this->field_creator->create_field( $field, $field_value );
+                      echo $this->field_creator->create_field( $field, $field_value, NULL, $i );
                       ?>
                    </div>
 
 
-                <?php endforeach; ?>
+                <?php $i++; endforeach; ?>
 
 
 

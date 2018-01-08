@@ -98,7 +98,7 @@ $metaboxes = array(
       'title'        => 'Translated CPT Metabox',
 
       'description'  => 'Fill in Translated',
-      'translations'          => array('es','en'),
+      // 'translations'          => array('es','en'),
 
       'fields' => array(
 
@@ -199,9 +199,9 @@ $metaboxes = array(
        // ),
        //
          array(
-            'field_name'            => 'test-cpt-not-translated-group2',
+            'field_name'            => 'test-cpt-not-translated-group3',
             'field_type'            => 'field_group',
-            'repeatable'            => false,
+            'repeatable'            => true,
             'field_label'           => 'Group Field, no translation',
             'description'           => 'A group field, no translation.',
             'markup_function'       => 'standard_metabox_html',
@@ -225,6 +225,48 @@ $metaboxes = array(
 
           )
        ),
+         array(
+            'field_name'            => 'test-cpt-not-translated-group4',
+            'field_type'            => 'field_group',
+            'repeatable'            => false,
+            'field_label'           => 'Group Field, no translation',
+            'description'           => 'A group field, no translation.',
+            'markup_function'       => 'standard_metabox_html',
+
+          'field_group'           => array(
+            'notrans_fg1' => array(
+               'field_name'            => 'notrans_fg1',
+               'field_type'            => 'text',
+               'field_label'           => 'f21'
+            ),
+            'notrans_fg2' => array(
+               'field_name'            => 'notrans_fg2',
+               'field_type'            => 'text',
+               'field_label'           => 'f22'
+            )
+
+          )
+       ),
+
+
+         array(
+            'field_name'            => 'test-cpt-not-translated-testtextnr',
+            'field_type'            => 'text',
+            'repeatable'            => false,
+            'field_label'           => 'tst nr',
+            'description'           => 'tst',
+            'markup_function'       => 'standard_metabox_html',
+          ),
+
+
+         array(
+            'field_name'            => 'test-cpt-not-translated-testtext',
+            'field_type'            => 'text',
+            'repeatable'            => true,
+            'field_label'           => 'tst r',
+            'description'           => 'tst',
+            'markup_function'       => 'standard_metabox_html',
+          ),
 
 
 
