@@ -207,9 +207,10 @@ class MetaboxFieldCreator {
 
     function field_group( $field, $value, $translationKey, $i=-1 ) {
 
-       ob_start();
+        // var_dump($value);
 
        $fieldName = $field['field_name'];
+
        if( $translationKey ) :
          $fieldName .= "_" . $translationKey;
        endif;
@@ -217,6 +218,7 @@ class MetaboxFieldCreator {
        ?>
 
        <fieldset class="field_inputs <?php echo $field['repeatable'] ? 'class="repeatable-input w-80"' : ''; ?>">
+
          <?php
 
          $keys = array_keys($field['field_group']);
@@ -224,20 +226,30 @@ class MetaboxFieldCreator {
          foreach ( $keys as $key ) :
 
            $eachField = $field['field_group'][$key];
+
            $eachFieldLabel = $field['field_group'][$key]['field_label'];
+
            if( $translationKey ) :
              $eachFieldLabel = $eachField['translations'][$translationKey]['field_label'];
            endif;
 
            $name = $fieldName;
+
+
            if( $i > -1 ) {
              $name .= '['.$i.']';
+             // $eachFieldGroupValue = $value[$i][$key];
+           } else {
+           //   $eachFieldGroupValue = NULL;
            }
 
-           $name .= '['.$key.']';
-
            $eachFieldGroupValue = $value[$key];
-
+           $name .= '['.$key.']';
+           //
+           // var_dump($i);
+           // var_dump($key);
+           // var_dump($value);
+           // var_dump($value[$i]);
          ?>
 
            <label for="">
@@ -259,15 +271,13 @@ class MetaboxFieldCreator {
 
          <?php endforeach; ?>
 
-         <?php
 
-         // if( $field['repeatable'] ) {
-         ?>
-           <!-- <button class="delete_this w-20">remove</button> -->
-         <?php
-         // }
+         <?php if( $field['repeatable'] ) { ?>
 
-         ?>
+           <button class="delete_this w-20">remove</button>
+
+         <?php } ?>
+
 
        </fieldset>
 

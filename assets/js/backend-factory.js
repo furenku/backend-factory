@@ -21,16 +21,58 @@ function setup_repeatables() {
 
         var models = translation_container.find('.repeatable-model .input-container')
 
+        var target_container
+
+        var model
+
         models.each(function(){
-          var model = $(this).clone().detach();
-          var target_container = $(this).parent().parent()
+          model = $(this).clone().detach();
+
+          target_container = $(this).parent().parent()
+          
+          if( model.data('type') == 'field_group' ) {
+            var i = target_container.find('[data-type=field_group]').last().data('i')
+            i++
+            model.attr('data-i',i)
+            model.find('input').each(function(){
+              var input = $(this)
+              var basename = input.attr('name').split('[')[0]
+              var newName = basename + "[" + i + "][" + input.attr('name').split('[')[1]
+              input.attr('name',newName)
+            })
+
+          }
+
           target_container.append( model );
+
         })
 
       } else {
-        var model = $(this).parent().find('.repeatable-model .input-container').clone().detach();
-        $(this).parent().find('.field-repeatable-inputs').append( model );
+
+        model = $(this).parent().find('.repeatable-model .input-container').clone().detach();
+
+
+        if( model.data('type') == 'field_group' ) {
+          var i = $('[data-type=field_group]').last().data('i')
+          i++
+          model.attr('data-i',i)
+          model.find('input').each(function(){
+            var input = $(this)
+            var basename = input.attr('name').split('[')[0]
+            var newName = basename + "[" + i + "][" + input.attr('name').split('[')[1]
+            input.attr('name',newName)
+          })
+
+        }
+
+        target_container = $(this).parent().find('.field-repeatable-inputs')
+        target_container.append( model );
+
       }
+
+
+
+
 
       setup_inputs();
       return false;
@@ -134,6 +176,10 @@ function setup_uploader() {
 
 
 function setup_metabox_language() {
+
+  $('.field-translated').hide();
+  $('.field-translated[lang=es]').show();
+
 
    $('.metabox-language-selector li a').click(function(){
      var metabox = $(this).parent().parent().parent().parent()

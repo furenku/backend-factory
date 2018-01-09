@@ -79,17 +79,27 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
 
             if(isset($_POST[ $field_name ]))
             {
-                $field_translated_values = array();
 
                 if( is_array($field['translations']) ) :
+
+                  $field_translated_values = array();
+
                   foreach( $field['translations'] as $translationKey => $translation ) :
+
                     $field_translated_values[$translationKey] = $_POST[ $field_name . "_" . $translationKey ];
+
                   endforeach;
+
+                else:
+
+                  $errors = "not array";
+
                 endif;
 
                $field_value = $_POST[ $field_name ];
 
                $field_type = $field['field_type'];
+
 
 
                // update_post_meta($post_id, "test", $field_name );
@@ -227,35 +237,148 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
 
             // clean array
 
-            if( $field['field_type'] == 'field_group' ) {
+            if( $field['field_type'] == "field_group" ) {
+
               if( is_array($field_value) ) {
 
-                for( $i = 0; $i<count($field_value); $i++ ) {
+                ob_start();
 
-                  $eachFieldGroup = $field_value[$i];
+                if( is_array($field_translated_values) ) {
+
+                  // $field_value = $field_translated_values;
+
+                  // $field_translated_values = array_filter(
+                  //   $field_translated_values,
+                  //   function( $value ) { return $value != ''; }
+                  // );
+
+                  $field_translated_values = cleanArray( $field_translated_values );
+                  var_dump($field_translated_values);
+//                   foreach ($field_translated_values as $ft_key => $ft_value_array) {
+//                     if( is_array( $ft_value_array ) ) {
+//                       if( isAssoc( $ft_value_array ) ) {
+//                         $field_translated_values[$ft_key] = clearEmptyAssoc( $ft_value_array );
+//                       }
+//                       $ft_value_array = array_filter($ft_value_array,function($v){
+//                         return $v != '';
+//                       });
+//                       foreach ($ft_value_array as $fta_key => $ft_value_array_array ) {
+//
+//                         if( isAssoc( $ft_value_array_array ) ) {
+//                           $field_translated_values[$ft_key][$fta_key] = clearEmptyAssoc( $ft_value_array_array );
+//                         }
+//                         $field_translated_values[$ft_key][$fta_key] = clearEmptyArrays( $ft_value_array_array );
+//
+// var_dump( $field_translated_values[$ft_key][$fta_key] );
+//                         // foreach ($ft_value_array_array as $ftaa_key => $ft_value_array_array_array ) {
+//                         //   var_dump($ft_value_array_array_array);
+//                         //   if( is_array( $ft_value_array_array_array ) ) {
+//                         //     if( isAssoc( $ft_value_array_array_array ) ) {
+//                         //       $field_translated_values[$ft_key][$fta_key][$ftaa_key] = clearEmptyAssoc( $ft_value_array_array_array );
+//                         //     }
+//                         //     $field_translated_values[$ft_key][$fta_key][$ftaa_key] = clearEmptyArrays( $ft_value_array_array_array );
+//                         //   }
+//                         //
+//                         // }
+//                       }
+//                     }
+//                   }
+
+                  $field_translated_values = array_filter(
+                    $field_translated_values,
+                    function( $key, $valueArray ) {
+                      if( is_array( $valueArray )) :
+                        foreach( $valueArray as $eachKey => $eachValue ) :
+                          $empty = $eachValue == '';
+                          if( $empty ) {
+                            unset( $valueArray[ $eachKey ] );
+                          }
+                        endforeach;
+                      endif;
+
+                      $empty = count($valueArray<=0);
+                      // $empty = true;
+
+                      return $empty;
+                    },
+                    ARRAY_FILTER_USE_BOTH
+                  );
+
+                  // var_dump($field_translated_values);
+                  // var_dump($field_translated_values);
+
+                } else {
+
+                  $field_value = array_filter(
+                    $field_value,
+                    function( $value ) {
+                      $empty = $value == '';
+                      return ! $empty;
+                    }
+                  );
+
+                }
+
+
+                foreach( $field_value as $key => $value ) {
+
+                  // var_dump( $key );
+                  // var_dump( $value );
+
+                  $eachFieldGroup = $field_value[$key];
 
                   if( is_array( $eachFieldGroup ) ) {
-                    $field_value[$i] = array_filter(
+
+                    // ob_start();
+                    // var_dump($eachFieldGroup);
+                    // $dump = ob_get_contents();
+                    // $errors .= $dump;
+                    $field_value[$key] = array_filter(
                       $eachFieldGroup,
-                      function($value) {
-                        return $value != '';
-                      }
+                      function($v,$k) {
+                        $empty = $v == '';
+                        if( $empty ) {
+                          unset( $eachFieldGroup[$k] );
+                        } else {
+                          if( is_array($v) ) {
+                            foreach( $v as $ak=>$av ) {
+                              $empty = $av == '';
+                              if( $empty ) {
+                                unset( $v[$ak] );
+                              }
+                            }
+                            if( ! count( $v ) ) {
+                              unset( $eachFieldGroup[$k] );
+                            }
+                          }
+                        }
+                        return ! $empty;
+                      },
+                      ARRAY_FILTER_USE_BOTH
                     );
                   }
 
                 }
-                $field_value = array_filter(
-                  $field_value,
-                  function($value) {
-                    return is_array($value) && count($value)>0;
-                  }
-                );
+
+
+
+                $dump = ob_get_contents();
+
+
+                $errors .= '<h3>ftv</h3>';
+                $errors .= $dump;
+                  // $field_value = array_filter(
+                  //   $field_value,
+                  //   function($value) {
+                  //     return is_array($value) && count($value)>0;
+                  //   }
+                  // );
+
 
               }
             }
 
             if( is_array($field['translations']) ) :
-
               foreach( $field['translations'] as $translationKey => $translation ) :
                 update_post_meta(
                   $post_id,
@@ -396,6 +519,7 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
 
                            if( ! isAssoc($value) ) {
+
                               foreach( $value as $one_value ) {
                                  // don't display any null or empty values
                                  if( $one_value && $one_value != "" ) {
@@ -403,18 +527,15 @@ public function standard_metabox_html( $post,  $callback_args ) {
                                  }
                               }
 
-                              // add an empty one for repeatables
-                              if( $field['repeatable'] ) {
-                                array_push( $valueArray, NULL );
-                              }
-
                           } else {
 
-                            array_push( $valueArray, value );
-                            if( $field['repeatable'] ) {
-                              array_push( $valueArray, NULL );
-                            }
+                            array_push( $valueArray, $value );
 
+                          }
+
+                          // add an empty one for repeatables
+                          if( $field['repeatable'] ) {
+                            array_push( $valueArray, NULL );
                           }
 
                          } else {
@@ -432,9 +553,10 @@ public function standard_metabox_html( $post,  $callback_args ) {
                          ?>
 
                          <div class="repeatable-model hidden" lang="<?php echo $translationKey; ?>">
-                            <div class="input-container">
+                           <div class="input-container" data-type="<?php echo $field['field_type']; ?>">
                                <?php
                                $value = NULL;
+                               // $i = $field['field_type'] == 'field_group' ? -1 : NULL;
                                echo $this->field_creator->create_field( $field, $value, $translationKey );
                                ?>
                             </div>
@@ -443,17 +565,36 @@ public function standard_metabox_html( $post,  $callback_args ) {
                        <?php endif;
 
                        $i = 0;
+                      foreach ($valueArray as $field_group ) :
+                        if( is_array($field_group) ) :
 
-                      foreach ($valueArray as $field_value ) :
-                         ?>
-                         <div class="input-container">
+                      // foreach ($valueArray as $field_group_array ) :
+                      //   if( is_array($field_group_array) ) :
+
+                          // foreach ($field_group_array as $key => $field_group) :
+                          //   var_dump($field_group);
+?>
+                           <div class="input-container" data-type="<?php echo $field['field_type']; ?>" data-i="<?php echo $i; ?>">
+                              <?php
+                              echo $this->field_creator->create_field( $field, $field_group, $translationKey, $i );
+                              ?>
+                           </div>
                             <?php
-                            // var_dump( $field_value );
-                            echo $this->field_creator->create_field( $field, $field_value, $translationKey, $i );
-                            ?>
-                         </div>
-                      <?php
-                      $i++;
+                            $i++;
+                          // endforeach;
+
+
+                        else:
+
+                          ?>
+                            <div class="input-container" data-type="<?php echo $field['field_type']; ?>" data-i="<?php echo $i; ?>">
+                              <?php
+                              echo $this->field_creator->create_field( $field, NULL, $translationKey, $i );
+                              ?>
+                            </div>
+                          <?php
+                        endif;
+                        // $i++;
                      endforeach;
                      ?>
 
@@ -464,7 +605,9 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
                   <div class="input-container hidden">
                     <?php
-                    echo $this->field_creator->create_field( $field, $field_value, NULL );
+                    if( $field['field_type'] == 'field_group' ) {
+                      echo $this->field_creator->create_field( $field, $field_value );
+                    }
                     ?>
                   </div>
 
@@ -499,6 +642,7 @@ public function standard_metabox_html( $post,  $callback_args ) {
                    // var_dump($value);
 
                      if( ! isAssoc($value) ) {
+
                         foreach( $value as $one_value ) {
                            // don't display any null or empty values
                            if( $one_value && $one_value != "" ) {
@@ -506,18 +650,16 @@ public function standard_metabox_html( $post,  $callback_args ) {
                            }
                         }
 
-                        if( $field['repeatable'] ) {
-                          array_push( $valueArray, NULL );
-                        }
-
                       } else {
 
                         array_push( $valueArray, $value );
 
-                        if( $field['repeatable'] ) {
-                          array_push( $valueArray, NULL );
-                        }
+                        var_dump( $value );
 
+                      }
+
+                      if( $field['repeatable'] ) {
+                        array_push( $valueArray, NULL );
                       }
 
                       // add an empty one for repeatables
@@ -537,19 +679,19 @@ public function standard_metabox_html( $post,  $callback_args ) {
                    ?>
 
                    <div class="repeatable-model hidden">
-                      <div class="input-container">
+                      <div class="input-container" data-type="<?php echo $field['field_type']; ?>">
                          <?php
-                         $value = NULL;
-                         echo $this->field_creator->create_field( $field, $value );
+                         echo $this->field_creator->create_field( $field );
                          ?>
                       </div>
                    </div>
 
                  <?php endif;
+
                  $i = 0;
                 foreach ($valueArray as $field_value ) :
                    ?>
-                   <div class="input-container">
+                   <div class="input-container" data-type="<?php echo $field['field_type']; ?>" data-id="<?php echo $i; ?>">
                       <?php
                       echo $this->field_creator->create_field( $field, $field_value, NULL, $i );
                       ?>
@@ -627,6 +769,60 @@ function isAssoc(array $arr)
 {
     if (array() === $arr) return false;
     return array_keys($arr) !== range(0, count($arr) - 1);
+}
+
+
+function clearEmptyAssoc(array $arr)
+{
+    $new_arr = $arr;
+
+    foreach( $arr as $arr_k => $arr_v ) {
+      if( $arr_v == '' ) {
+        unset( $new_arr[ $arr_k] );
+      }
+    }
+
+    return $new_arr;
+
+}
+
+function clearEmptyArrays(array $arr)
+{
+
+  $new_arr = $arr;
+
+  foreach( $arr as $arr_k => $arr_v ) {
+    if( is_array($arr_v) ) {
+      if( count($arr_v) <= 0 ) {
+        unset( $new_arr[ $arr_k] );
+      }
+    }
+  }
+
+  return $new_arr;
+
+}
+
+
+function cleanArray(array $arr)
+{
+  if( is_array( $arr ) ) {
+
+    $new_arr = $arr;
+
+    $new_arr = clearEmptyAssoc($new_arr);
+    // $new_arr = clearEmptyArrays($new_arr);
+
+    foreach( $new_arr as $arr_k => $arr_v ) {
+      if( is_array($arr_v) ) {
+        $new_arr[$arr_k] = cleanArray($arr_v);
+      }
+    }
+
+
+    return $new_arr;
+
+  }
 }
 
 

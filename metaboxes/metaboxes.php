@@ -91,7 +91,7 @@ $metaboxes = array(
    ),
 
 
-   'translated-cpt-test-text'=>array(
+   'translated-cpt-test-metabox-no-translation' => array(
 
       'post_type'    => 'translated-cpt',
       'name'         => 'translated-cpt-metabox',
@@ -102,102 +102,7 @@ $metaboxes = array(
 
       'fields' => array(
 
-         // array(
-         //    'field_name'            => 'test-cpt-translated',
-         //    'field_type'            => 'text',
-         //    'repeatable'            => false,
-         //    'field_label'           => 'Translated Field',
-         //    'description'           => 'A translated field.',
-         //    'markup_function'       => 'standard_metabox_html',
-         //    'translations'          => array(
-         //      'en' => array(
-         //        'field_label'           => 'Translated Field',
-         //        'description'           => 'A translated field.',
-         //      ),
-         //      'es' => array(
-         //        'field_label'           => 'Campo Traducido',
-         //        'description'           => 'Un campo traducido.',
-         //      )
-         //    )
-         // ),
 
-
-         // array(
-         //    'field_name'            => 'test-cpt-translated-repeatable',
-         //    'field_type'            => 'text',
-         //    'repeatable'            => true,
-         //    'field_label'           => 'Translated repeatable Field',
-         //    'description'           => 'A translated repeatable field.',
-         //    'markup_function'       => 'standard_metabox_html',
-         //    'translations'          => array(
-         //      'en' => array(
-         //        'field_label'           => 'Translated Field r',
-         //        'description'           => 'A translated field r.',
-         //      ),
-         //      'es' => array(
-         //        'field_label'           => 'Campo Traducido r',
-         //        'description'           => 'Un campo traducido r.',
-         //      )
-         //    )
-         // ),
-
-
-       //   array(
-       //      'field_name'            => 'test-cpt-translated-group',
-       //      'field_type'            => 'field_group',
-       //      'repeatable'            => false,
-       //      'field_label'           => 'Translated group Field',
-       //      'description'           => 'A translated group field.',
-       //      'markup_function'       => 'standard_metabox_html',
-       //      'translations'          => array( 'en' => array(
-       //        'field_label'           => 'Translated field group',
-       //      ),
-       //      'es' => array(
-       //        'field_label'           => 'Group de campos traducido ',
-       //      )
-       //    ),
-       //
-       //    'field_group'           => array(
-       //      'trans_fg1' => array(
-       //         'field_name'            => 'trans_fg1',
-       //         'field_type'            => 'text',
-       //         'translations'          => array(
-       //           'en' => array(
-       //             'field_label'           => 'translated field group field 1',
-       //           ),
-       //           'es' => array(
-       //             'field_label'           => 'traducido field group field 1',
-       //           )
-       //         )
-       //      ),
-       //      'trans_fg2' => array(
-       //         'field_name'            => 'trans_fg2',
-       //         'field_type'            => 'text',
-       //         'translations'          => array(
-       //           'en' => array(
-       //             'field_label'           => 'translated field group field 2',
-       //           ),
-       //           'es' => array(
-       //             'field_label'           => 'traducido field group field 2',
-       //           )
-       //         )
-       //      ),
-       //      'trans_fg3' => array(
-       //         'field_name'            => 'trans_fg3',
-       //         'field_type'            => 'text',
-       //         'translations'          => array(
-       //           'en' => array(
-       //             'field_label'           => 'translated field group field 3',
-       //           ),
-       //           'es' => array(
-       //             'field_label'           => 'traducido field group field 3',
-       //           )
-       //         )
-       //      ),
-       //
-       //    )
-       // ),
-       //
          array(
             'field_name'            => 'test-cpt-not-translated-group3',
             'field_type'            => 'field_group',
@@ -270,26 +175,232 @@ $metaboxes = array(
 
 
 
+      )
+   ),
 
-         // array(
-         //    'field_name'            => 'test-cpt-not-translated',
-         //    'field_type'            => 'text',
-         //    'repeatable'            => false,
-         //    'field_label'           => 'Field without Translation',
-         //    'description'           => 'Field without Translation',
-         //    'markup_function'       => 'standard_metabox_html'
-         // ),
-         // array(
-         //    'field_name'            => 'test-cpt-not-translated-r',
-         //    'field_type'            => 'text',
-         //    'repeatable'            => true,
-         //    'field_label'           => 'Field without Translation r',
-         //    'description'           => 'Field without Translation r',
-         //    'markup_function'       => 'standard_metabox_html'
-         // ),
+
+   'translated-cpt-test-metabox-translation' => array(
+
+      'post_type'    => 'translated-cpt',
+      'name'         => 'translated-cpt-metabox',
+      'title'        => 'Translated CPT Metabox',
+
+      'description'  => 'Fill in Translated',
+      'translations'          => array('es','en'),
+
+      'fields' => array(
+        //
+        // array(
+        //    'field_name'            => 'test-cpt-translated',
+        //    'field_type'            => 'text',
+        //    'repeatable'            => false,
+        //    'field_label'           => 'Translated Field',
+        //    'description'           => 'A translated field.',
+        //    'markup_function'       => 'standard_metabox_html',
+        //    'translations'          => array(
+        //      'en' => array(
+        //        'field_label'           => 'Translated Field',
+        //        'description'           => 'A translated field.',
+        //      ),
+        //      'es' => array(
+        //        'field_label'           => 'Campo Traducido',
+        //        'description'           => 'Un campo traducido.',
+        //      )
+        //    )
+        // ),
+        //
+        //
+        // array(
+        //    'field_name'            => 'test-cpt-translated-repeatable',
+        //    'field_type'            => 'text',
+        //    'repeatable'            => true,
+        //    'field_label'           => 'Translated repeatable Field',
+        //    'description'           => 'A translated repeatable field.',
+        //    'markup_function'       => 'standard_metabox_html',
+        //    'translations'          => array(
+        //      'en' => array(
+        //        'field_label'           => 'Translated Field r',
+        //        'description'           => 'A translated field r.',
+        //      ),
+        //      'es' => array(
+        //        'field_label'           => 'Campo Traducido r',
+        //        'description'           => 'Un campo traducido r.',
+        //      )
+        //    )
+        // ),
+        //
+        //
+        //   array(
+        //      'field_name'            => 'test-cpt-translated-group',
+        //      'field_type'            => 'field_group',
+        //      'repeatable'            => false,
+        //      'field_label'           => 'Translated group Field',
+        //      'description'           => 'A translated group field.',
+        //      'markup_function'       => 'standard_metabox_html',
+        //      'translations'          => array( 'en' => array(
+        //        'field_label'           => 'Translated field group',
+        //      ),
+        //      'es' => array(
+        //        'field_label'           => 'Group de campos traducido ',
+        //      )
+        //    ),
+        //
+        //    'field_group'           => array(
+        //      'trans_fg1' => array(
+        //         'field_name'            => 'trans_fg1',
+        //         'field_type'            => 'text',
+        //         'translations'          => array(
+        //           'en' => array(
+        //             'field_label'           => 'translated field group field 1',
+        //           ),
+        //           'es' => array(
+        //             'field_label'           => 'traducido field group field 1',
+        //           )
+        //         )
+        //      ),
+        //      'trans_fg2' => array(
+        //         'field_name'            => 'trans_fg2',
+        //         'field_type'            => 'text',
+        //         'translations'          => array(
+        //           'en' => array(
+        //             'field_label'           => 'translated field group field 2',
+        //           ),
+        //           'es' => array(
+        //             'field_label'           => 'traducido field group field 2',
+        //           )
+        //         )
+        //      ),
+        //      'trans_fg3' => array(
+        //         'field_name'            => 'trans_fg3',
+        //         'field_type'            => 'text',
+        //         'translations'          => array(
+        //           'en' => array(
+        //             'field_label'           => 'translated field group field 3',
+        //           ),
+        //           'es' => array(
+        //             'field_label'           => 'traducido field group field 3',
+        //           )
+        //         )
+        //      ),
+        //
+        //    )
+        // ),
+
+
+        array(
+             'field_name'            => 'test-cpt-translated-group_r',
+             'field_type'            => 'field_group',
+             'repeatable'            => true,
+             'field_label'           => 'Translated group Field repeatable',
+             'description'           => 'A translated group field repeatable.',
+             'markup_function'       => 'standard_metabox_html',
+             'translations'          => array(
+               'en' => array(
+                 'field_label'           => 'Translated field group repeatable',
+               ),
+               'es' => array(
+                 'field_label'           => 'Group de campos traducido repetible  ',
+               )
+             ),
+
+           'field_group'           => array(
+             'trans_fg1' => array(
+                'field_name'            => 'trans_fg1',
+                'field_type'            => 'text',
+                'field_label'            => 'text 0',
+                'translations'          => array(
+                  'en' => array(
+                    'field_label'           => 'translated field group field 1',
+                  ),
+                  'es' => array(
+                    'field_label'           => 'traducido field group field 1',
+                  )
+                )
+             ),
+             'trans_fg2' => array(
+                'field_name'            => 'trans_fg2',
+                'field_type'            => 'text',
+                'field_label'            => 'text 1',
+                'translations'          => array(
+                  'en' => array(
+                    'field_label'           => 'translated field group field 2',
+                  ),
+                  'es' => array(
+                    'field_label'           => 'traducido field group field 2',
+                  )
+                )
+             ),
+             'trans_fg3' => array(
+                'field_name'            => 'trans_fg3',
+                'field_type'            => 'text',
+                'field_label'            => 'text 2',
+                'translations'          => array(
+                  'en' => array(
+                    'field_label'           => 'translated field group field 3',
+                  ),
+                  'es' => array(
+                    'field_label'           => 'traducido field group field 3',
+                  )
+                )
+             ),
+
+           )
+        ),
 
       )
    ),
+
+
+
+
+
+
+   //
+   // 'translated-cpt-test-metabox-no-translation' => array(
+   //
+   //    'post_type'    => 'translated-cpt',
+   //    'name'         => 'not-translated-cpt-metabox',
+   //    'title'        => 'Not Translated CPT Metabox',
+   //
+   //    'description'  => 'Fill in Fields',
+   //    // 'translations'          => array('es','en'),
+   //
+   //    'fields' => array(
+   //
+   //      array(
+   //           'field_name'            => 'test-cpt-not-translated-group_r',
+   //           'field_type'            => 'field_group',
+   //           'repeatable'            => true,
+   //           'field_label'           => 'not Translated group Field repeatable',
+   //           'description'           => 'A not translated group field repeatable.',
+   //           'markup_function'       => 'standard_metabox_html',
+   //
+   //           'field_group'           => array(
+   //             'trans_fg1' => array(
+   //                'field_name'            => 'trans_fg1',
+   //                'field_type'            => 'text',
+   //                'field_label'           => 'text 0'
+   //             ),
+   //             'trans_fg2' => array(
+   //                'field_name'            => 'trans_fg2',
+   //                'field_type'            => 'text',
+   //                'field_label'           => 'text 1'
+   //             ),
+   //             'trans_fg3' => array(
+   //                'field_name'            => 'trans_fg3',
+   //                'field_type'            => 'text',
+   //                'field_label'           => 'text 2',
+   //             ),
+   //
+   //         )
+   //      ),
+   //
+   //    )
+   // ),
+
+
+
+
 
 
    'repeatable-field-cpt' => array(
