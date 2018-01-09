@@ -83,7 +83,9 @@ class MetaboxFieldCreator {
 
 
 
-   function form_input( $field, $value, $translationKey = NULL ) {
+   function form_input( $field, $value, $translationKey = NULL, $i=NULL ) {
+
+// var_dump( $value);
 
       ob_start();
 
@@ -97,7 +99,7 @@ class MetaboxFieldCreator {
 
       <input
       type="<?php echo $field['field_type']; ?>"
-      name="<?php echo $field['repeatable'] ? $field_name . '[]' : $field_name; ?>"
+      name="<?php echo $field['repeatable'] ? $field_name . '['.$i.']' : $field_name; ?>"
       value="<?php echo $value; ?>"
       name="<?php echo $field_name; ?>"
 

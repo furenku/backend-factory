@@ -453,7 +453,90 @@ $metaboxes = array(
 
 
 
-);
+   'post-repeatable-translated-field' => array(
 
+      'post_type'    => 'post',
+      'name'         => 'post-repeatable-translated-field',
+      'title'        => 'post-repeatable-translated-field',
+
+      'translations' => array('en','es'),
+
+      'description'  => '',
+
+      'fields' => array(
+
+         array(
+            'field_name'            => 'post-repeatable-translated-text',
+            'field_type'            => 'text',
+            'repeatable'            => true,
+            'field_label'           => 'post-repeatable-translated-field',
+            'translations' => array(
+              'en' => array('field_label'=>'...en...'),
+              'es' => array('field_label'=>'...es...')
+            ),
+
+            'description'           => 'post-repeatable-translated-field',
+            'markup_function'       => 'standard_metabox_html'
+         ),
+
+
+      )
+   ),
+
+   'post-not-repeatable-translated-field' => array(
+
+      'post_type'    => 'post',
+      'name'         => 'post-not-repeatable-translated-field',
+      'title'        => 'post-not-repeatable-translated-field',
+
+      // 'translations' => array('en','es'),
+
+      'description'  => '',
+
+      'fields' => array(
+
+         array(
+            'field_name'            => 'post-repeatable-translated-text',
+            'field_type'            => 'text',
+            'repeatable'            => true,
+            'field_label'           => 'post-not-repeatable-translated-field',
+            // 'translations' => array(
+            //   'en' => array('field_label'=>'...en...'),
+            //   'es' => array('field_label'=>'...es...')
+            // ),
+
+            'description'           => 'post-not-repeatable-translated-field',
+            'markup_function'       => 'standard_metabox_html'
+         ),
+
+         array(
+            'field_name'            => 'post-repeatable-translated-field_group',
+            'field_type'            => 'field_group',
+            'repeatable'            => true,
+            'field_label'           => 'post-not-repeatable-translated-field',
+            'description'           => 'post-not-repeatable-translated-field',
+            'markup_function'       => 'standard_metabox_html',
+            'field_group'           => array(
+              'notrans_fg1' => array(
+                 'field_name'            => 'notrans_fg1',
+                 'field_type'            => 'text',
+                 'field_label'           => 'f1'
+              ),
+              'notrans_fg2' => array(
+                 'field_name'            => 'notrans_fg2',
+                 'field_type'            => 'text',
+                 'field_label'           => 'f2'
+              ),
+            ),
+         ),
+
+
+      )
+   ),
+
+
+
+
+);
 
 ?>

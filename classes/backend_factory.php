@@ -112,3 +112,17 @@ class BackendFactory {
    }
 
 }
+
+
+
+function get_field( $postid, $field_name, $language ) {
+
+  if( $language ) {
+    $field_name .= "_" . $language;
+  }
+
+  $value = get_post_meta( $postid, $field_name, true );
+
+  return $value;
+
+}

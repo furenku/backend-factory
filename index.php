@@ -69,7 +69,7 @@ function load_assets() {
 }
 
 
-// add_action("admin_notices","wp_errors");
+add_action("admin_notices","wp_errors");
 
 function wp_errors() {
    if ( array_key_exists( 'backend-factory-errors', $_SESSION ) ) { ?>
