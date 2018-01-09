@@ -72,12 +72,14 @@ function load_assets() {
 // add_action("admin_notices","wp_errors");
 
 function wp_errors() {
-   if ( array_key_exists( 'backend-factory-errors', $_SESSION ) ) {?>
-       <div class="error">
-           <p><?php echo $_SESSION['backend-factory-errors']; ?></p>
-       </div><?php
+   if ( array_key_exists( 'backend-factory-errors', $_SESSION ) ) { ?>
 
-       unset( $_SESSION['backend-factory-errors'] );
+     <div class="error">
+         <p><?php echo $_SESSION['backend-factory-errors']; ?></p>
+     </div><?php
+
+     unset( $_SESSION['backend-factory-errors'] );
+
    }
 }
 

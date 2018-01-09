@@ -1,7 +1,5 @@
 <?php
 
-include_once 'template-standard_metabox.php';
-
 class DynamicMetaboxes {
 
    var $metaboxes;

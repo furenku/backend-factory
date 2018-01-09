@@ -292,18 +292,34 @@ class MetaboxFieldCreator {
 
 
 
-   function upload_field( $field, $value ) {
+   function upload_field( $field, $value, $translationKey, $i=-1 ) {
 
+
+      $fieldName = $field['field_name'];
+
+      if( $translationKey ) :
+        $fieldName .= "_" . $translationKey;
+      endif;
       wp_enqueue_script('jquery');
+
       wp_enqueue_media();
-      $upload_input_id = "upload_input-" . $field['field_name'];
-      $upload_button_id = "upload_button-" . $field['field_name'];
+
       ob_start();
+
+      $upload_input_id = "upload_input-" . $fieldName;
+      $upload_button_id = "upload_button-" . $fieldName;
       ?>
+
       <input
       type="url"
-      name="<?php echo $field['repeatable'] ? $field['field_name'] . '[]' : $field['field_name']; ?>"
+      name="<?php echo $field['repeatable'] ? $fieldName . '[]' : $fieldName; ?>"
       class="upload_input"
+
+      <?php if( $translationKey ) : ?>
+        lang="<?php echo $translationKey; ?>"
+        class="input-translated"
+      <?php endif; ?>
+
       value="<?php echo $value; ?>"
       >
       <input
@@ -315,10 +331,11 @@ class MetaboxFieldCreator {
 
       <?php
       if( $field['repeatable'] ) {
-         ?>
-         <button class="delete_this w-20">remove</button>
-         <?php
+        ?>
+        <button class="delete_this w-20">remove</button>
+        <?php
       }
+
 
       $html = ob_get_contents();
       ob_end_clean();
