@@ -29,3 +29,7 @@ $translations['es'] = array(
   "label" => "Español",
   "metabox_labels" => $metabox_labels
 );
+
+
+
+$translations['default'] = 'es';

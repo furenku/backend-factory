@@ -117,11 +117,30 @@ class BackendFactory {
 
 function get_field( $postid, $field_name, $language ) {
 
+  global $translations;
+
+  $fieldName = $field_name;
+
   if( $language ) {
-    $field_name .= "_" . $language;
+
+    $fieldName .= "_" . $language;
+
+    $value = get_post_meta( $postid, $fieldName, true );
+
+
+  } else {
+
+    $value = get_post_meta( $postid, $fieldName, true );
+
   }
 
-  $value = get_post_meta( $postid, $field_name, true );
+  if( ! $value || $value == '' ) {
+
+    $fieldName = $field_name . "_" . $translations['default'];
+
+    $value = get_post_meta( $postid, $fieldName, true );
+
+  }
 
   return $value;
 

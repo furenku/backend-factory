@@ -89,16 +89,29 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
 
                     if( is_array($field_translated_values[$translationKey]) ) {
 
-                      $field_translated_values[$translationKey] = array_filter(
-                        $field_translated_values[$translationKey],
-                        function( $v ) {
-                          return $v != '';
-                        }
+                      $field_translated_values[$translationKey] = cleanArray(
+                        $field_translated_values[$translationKey]
                       );
-ob_start();
-var_dump( array_values( $field_translated_values[$translationKey] ) );
-$dump = ob_get_contents();
-$errors = $dump;
+                      // $field_translated_values[$translationKey] = array_filter(
+                      //   $field_translated_values[$translationKey],
+                      //   function( $v, $k ) {
+                      //     $empty = $v == '';
+                      //     if( ! $empty ) {
+                      //       if( is_array( $v ) ) {
+                      //         $empty = count( $v ) <= 0;
+                      //         if( $empty ) {
+                      //           unset( $field_translated_values[$translationKey][$k] );
+                      //         }
+                      //       }
+                      //     }
+                      //     return ! $empty;
+                      //   },
+                      //   ARRAY_FILTER_USE_BOTH
+                      // );
+// ob_start();
+// var_dump( array_values( $field_translated_values[$translationKey] ) );
+// $dump = ob_get_contents();
+// $errors = $dump;
                       $field_translated_values[$translationKey] = array_values( $field_translated_values[$translationKey] );
 
                     }
@@ -107,7 +120,7 @@ $errors = $dump;
 
                 else:
 
-                  $errors = "no translations array ! []";
+                  // $errors = "no translations array ! []";
 
                 endif;
 
@@ -115,12 +128,13 @@ $errors = $dump;
 
                if( is_array($field_value) ) {
 
-                 $field_value = array_filter(
-                   $field_value,
-                   function( $v ) {
-                     return $v != '';
-                   }
-                 );
+                 $new_field_value = cleanArray( $field_value );
+
+                 $field_value = $new_field_value;
+
+                 ob_start();
+                 var_dump( $new_field_value );
+                 $errors .= ob_get_contents();
 
                  $field_value = array_values( $field_value );
 
@@ -746,13 +760,29 @@ function clearEmptyAssoc(array $arr)
 
 }
 
+function array_remove_empty($haystack)
+{
+    foreach ($haystack as $key => $value) {
+        if (is_array($value)) {
+            $haystack[$key] = array_remove_empty($haystack[$key]);
+        }
+
+        if (empty($haystack[$key])) {
+            unset($haystack[$key]);
+        }
+    }
+
+    return $haystack;
+}
+
 function clearEmptyArrays(array $arr)
 {
 
   $new_arr = $arr;
 
-  foreach( $arr as $arr_k => $arr_v ) {
+  foreach( $new_arr as $arr_k => $arr_v ) {
     if( is_array($arr_v) ) {
+
       if( count($arr_v) <= 0 ) {
         unset( $new_arr[ $arr_k] );
       }
@@ -766,6 +796,8 @@ function clearEmptyArrays(array $arr)
 
 function cleanArray(array $arr)
 {
+
+
   if( is_array( $arr ) ) {
 
     $new_arr = $arr;
@@ -773,12 +805,19 @@ function cleanArray(array $arr)
     $new_arr = clearEmptyAssoc($new_arr);
     // $new_arr = clearEmptyArrays($new_arr);
 
+
+    // $new_arr = array_filter(
+    //   $new_arr,
+    //   function($v){return count($v) == 0 ? false : true;
+    // });
+
     foreach( $new_arr as $arr_k => $arr_v ) {
       if( is_array($arr_v) ) {
         $new_arr[$arr_k] = cleanArray($arr_v);
       }
     }
 
+    $new_arr = array_remove_empty( $new_arr );
 
     return $new_arr;
 
