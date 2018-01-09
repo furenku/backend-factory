@@ -77,6 +77,7 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
            $field_name = $field['field_name'];
 
 
+
             if(isset($_POST[ $field_name ]))
             {
 
@@ -90,9 +91,10 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
 
                   endforeach;
 
+
                 else:
 
-                  $errors = "not array";
+                  $errors = "no translations array ! []";
 
                 endif;
 
@@ -241,48 +243,12 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
 
               if( is_array($field_value) ) {
 
-                ob_start();
+                // ob_start();
 
                 if( is_array($field_translated_values) ) {
 
-                  // $field_value = $field_translated_values;
-
-                  // $field_translated_values = array_filter(
-                  //   $field_translated_values,
-                  //   function( $value ) { return $value != ''; }
-                  // );
 
                   $field_translated_values = cleanArray( $field_translated_values );
-                  var_dump($field_translated_values);
-//                   foreach ($field_translated_values as $ft_key => $ft_value_array) {
-//                     if( is_array( $ft_value_array ) ) {
-//                       if( isAssoc( $ft_value_array ) ) {
-//                         $field_translated_values[$ft_key] = clearEmptyAssoc( $ft_value_array );
-//                       }
-//                       $ft_value_array = array_filter($ft_value_array,function($v){
-//                         return $v != '';
-//                       });
-//                       foreach ($ft_value_array as $fta_key => $ft_value_array_array ) {
-//
-//                         if( isAssoc( $ft_value_array_array ) ) {
-//                           $field_translated_values[$ft_key][$fta_key] = clearEmptyAssoc( $ft_value_array_array );
-//                         }
-//                         $field_translated_values[$ft_key][$fta_key] = clearEmptyArrays( $ft_value_array_array );
-//
-// var_dump( $field_translated_values[$ft_key][$fta_key] );
-//                         // foreach ($ft_value_array_array as $ftaa_key => $ft_value_array_array_array ) {
-//                         //   var_dump($ft_value_array_array_array);
-//                         //   if( is_array( $ft_value_array_array_array ) ) {
-//                         //     if( isAssoc( $ft_value_array_array_array ) ) {
-//                         //       $field_translated_values[$ft_key][$fta_key][$ftaa_key] = clearEmptyAssoc( $ft_value_array_array_array );
-//                         //     }
-//                         //     $field_translated_values[$ft_key][$fta_key][$ftaa_key] = clearEmptyArrays( $ft_value_array_array_array );
-//                         //   }
-//                         //
-//                         // }
-//                       }
-//                     }
-//                   }
 
                   $field_translated_values = array_filter(
                     $field_translated_values,
@@ -362,11 +328,11 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
 
 
 
-                $dump = ob_get_contents();
-
-
-                $errors .= '<h3>ftv</h3>';
-                $errors .= $dump;
+                // $dump = ob_get_contents();
+                //
+                //
+                // $errors .= '<h3>ftv</h3>';
+                // $errors .= $dump;
                   // $field_value = array_filter(
                   //   $field_value,
                   //   function($value) {
@@ -379,7 +345,14 @@ public function save_metaboxes($post_id=0, $post=0, $update=0)
             }
 
             if( is_array($field['translations']) ) :
+
+
               foreach( $field['translations'] as $translationKey => $translation ) :
+                ob_start();
+                $dump = ob_get_contents();
+                $errors .= $dump;
+
+
                 update_post_meta(
                   $post_id,
                   $field_name . "_" . $translationKey,
@@ -461,10 +434,9 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
            $fieldName = $field['field_name'];
 
-           if( ! array_key_exists( $currentTranslation, $field['translations'] ) ) :
-
-
-           endif;
+           // if( ! array_key_exists( $currentTranslation, $field['translations'] ) ) :
+           //
+           // endif;
 
             ?>
 
@@ -492,7 +464,6 @@ public function standard_metabox_html( $post,  $callback_args ) {
                     $value = get_post_meta( $post->ID, $fieldName, true);
 
                     $valueArray = array();
-
                     ?>
 
                     <div class="field-translated" lang="<?php echo $translationKey; ?>">
@@ -565,31 +536,21 @@ public function standard_metabox_html( $post,  $callback_args ) {
                        <?php endif;
 
                        $i = 0;
-                      foreach ($valueArray as $field_group ) :
-                        if( is_array($field_group) ) :
-
-                      // foreach ($valueArray as $field_group_array ) :
-                      //   if( is_array($field_group_array) ) :
-
-                          // foreach ($field_group_array as $key => $field_group) :
-                          //   var_dump($field_group);
-?>
+                      foreach ($valueArray as $arrayValue ) :
+                        if( is_array($arrayValue) ) : ?>
                            <div class="input-container" data-type="<?php echo $field['field_type']; ?>" data-i="<?php echo $i; ?>">
                               <?php
-                              echo $this->field_creator->create_field( $field, $field_group, $translationKey, $i );
+                              echo $this->field_creator->create_field( $field, $arrayValue, $translationKey, $i );
                               ?>
                            </div>
                             <?php
                             $i++;
-                          // endforeach;
-
-
                         else:
 
                           ?>
                             <div class="input-container" data-type="<?php echo $field['field_type']; ?>" data-i="<?php echo $i; ?>">
                               <?php
-                              echo $this->field_creator->create_field( $field, NULL, $translationKey, $i );
+                              echo $this->field_creator->create_field( $field, $arrayValue, $translationKey, $i );
                               ?>
                             </div>
                           <?php
@@ -605,7 +566,7 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
                   <div class="input-container hidden">
                     <?php
-                    if( $field['field_type'] == 'field_group' ) {
+                    if( is_array($field['translations']) ) {
                       echo $this->field_creator->create_field( $field, $field_value );
                     }
                     ?>
@@ -654,7 +615,7 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
                         array_push( $valueArray, $value );
 
-                        var_dump( $value );
+                        // var_dump( $value );
 
                       }
 
@@ -690,8 +651,9 @@ public function standard_metabox_html( $post,  $callback_args ) {
 
                  $i = 0;
                 foreach ($valueArray as $field_value ) :
+
                    ?>
-                   <div class="input-container" data-type="<?php echo $field['field_type']; ?>" data-id="<?php echo $i; ?>">
+                   <div class="input-container" data-type="<?php echo $field['field_type']; ?>" data-i="<?php echo $i; ?>">
                       <?php
                       echo $this->field_creator->create_field( $field, $field_value, NULL, $i );
                       ?>

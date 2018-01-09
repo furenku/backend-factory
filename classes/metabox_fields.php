@@ -84,7 +84,9 @@ class MetaboxFieldCreator {
 
 
    function form_input( $field, $value, $translationKey = NULL ) {
+
       ob_start();
+
       $field_name = $field['field_name'];
       if( $translationKey ) :
         $field_name .= "_" . $translationKey;
