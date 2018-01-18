@@ -145,3 +145,74 @@ function get_field( $postid, $field_name, $language ) {
   return $value;
 
 }
+
+
+function get_field_label( $field_name, $language ) {
+
+  global $metaboxes;
+  $selected_field = NULL;
+
+  foreach( $metaboxes as $metabox ) {
+    foreach( $metabox['fields'] as $field ) {
+       if( ! strcmp( $field['field_name'], $field_name ) ) {
+         $selected_field = $field;
+         break;
+       }
+    }
+  }
+
+  if( $selected_field ) {
+
+    if( $selected_field['translations'] ) {
+      if( ! $language ) { $language = $translations['default']; }
+      return $selected_field['translations'][$language]['field_label'];
+    } else {
+      return $selected_field['field_label'];
+    }
+  }
+
+}
+
+
+function get_field_group_labels( $field_name, $language ) {
+
+  global $metaboxes;
+  $selected_field = NULL;
+
+  foreach( $metaboxes as $metabox ) {
+    foreach( $metabox['fields'] as $field ) {
+       if( ! strcmp( $field['field_name'], $field_name ) ) {
+         $selected_field = $field;
+         break;
+       }
+    }
+  }
+
+  if( $selected_field ) {
+
+    if( $selected_field['field_type'] == 'field_group' ) {
+
+      $group_field_labels = array();
+
+      $group_fields = $selected_field['field_group'];
+
+      foreach ($group_fields as $group_field ) {
+
+        if( is_array( $selected_field['translations'] ) ) {
+          if( ! $language ) { $language = $translations['default']; }
+          $label = $group_field['translations'][$language]['field_label'];
+        } else {
+          $label = $group_field['field_label'];
+        }
+
+        $group_field_labels[$group_field['field_name']] = $label;
+      }
+
+      return $group_field_labels;
+
+    } else {
+      return $selected_field['field_label'];
+    }
+  }
+
+}
